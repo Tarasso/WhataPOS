@@ -16,6 +16,8 @@ public class WelcomeScreenController {
         System.out.println("User logged in...");
     }
 
+    // Buttons
+
     public void changeOrderScreenPushed(ActionEvent event) throws IOException {
         Parent orderScreenParent = FXMLLoader.load(getClass().getResource("OrderScreen.fxml"));
         Scene orderScreenScene = new Scene(orderScreenParent);
@@ -23,7 +25,19 @@ public class WelcomeScreenController {
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(orderScreenScene);
         window.show();
-
     }
+    public void changeEmployeeLoginScreenPushed(ActionEvent event) throws IOException {
+        Parent employeeLoginScreenParent = FXMLLoader.load(getClass().getResource("EmployeeLoginScreen.fxml"));
+        Scene employeeLoginScreenScene = new Scene(employeeLoginScreenParent);
+
+        Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
+        window.setScene(employeeLoginScreenScene);
+        window.show();
+    }
+
+
+
+
+
 
 }

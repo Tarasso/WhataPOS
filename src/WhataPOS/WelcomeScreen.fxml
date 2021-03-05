@@ -18,7 +18,7 @@
             <HBox>
                <children>
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" prefHeight="29.0" prefWidth="97.0" text="Employee" />
+                  <Button mnemonicParsing="false" onAction="#changeEmployeeLoginScreenPushed" prefHeight="29.0" prefWidth="97.0" text="Employee" />
                </children>
                <VBox.margin>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -40,7 +40,7 @@
             </Text>
             <ImageView fitHeight="300.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="file:/C:/Users/Minh/Documents/GitHub/WhataPOS/assets/whataburger_logo.png" />
+                  <Image url="file:/C:/Users/Minh%20Luu/Documents/GitHub/WhataPOS/assets/whataburger_logo.png" />
                </image>
             </ImageView>
             <Button mnemonicParsing="false" onAction="#changeOrderScreenPushed" text="Tap here to order">
