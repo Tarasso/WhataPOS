@@ -1,11 +1,11 @@
 package WhataPOS;
 
-public class Menu {
+public class Entree {
     private String id;
     private String name;
     private String type;
 
-    public Menu(String id, String name, String type) {
+    public Entree(String id, String name, String type) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -34,6 +34,5 @@ public class Menu {
     public void setType(String type) {
         this.type = type;
     }
-
 
 }

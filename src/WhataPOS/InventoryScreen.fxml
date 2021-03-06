@@ -7,76 +7,96 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="576.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WhataPOS.InventoryScreenController">
-   <children>
-      <Button layoutX="35.0" layoutY="28.0" mnemonicParsing="false" onAction="#actionLogOut" text="Logout" />
-      <TableView fx:id="inventoryTableView" layoutX="550.0" layoutY="106.0" prefHeight="424.0" prefWidth="443.0">
-        <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="103.20001220703125" text="C2" />
-        </columns>
-      </TableView>
-      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="62.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true" />
-      <AnchorPane layoutX="79.0" layoutY="106.0" prefHeight="424.0" prefWidth="340.0" style="-fx-background-color: #FFFFFF;">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="1024.0" style="-fx-background-color: #525252;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WhataPOS.InventoryScreenController">
+   <top>
+      <VBox style="-fx-background-color: #FF7802;" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="150.0" fitWidth="312.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+            <HBox>
+               <children>
+                  <Button mnemonicParsing="false" onAction="#actionLogOut" prefHeight="29.0" prefWidth="97.0" text="Logout" />
+                  <Region HBox.hgrow="ALWAYS" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <AnchorPane prefHeight="530.0" prefWidth="1090.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="555.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Inventory" textFill="WHITE">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Label>
+            <Label layoutX="47.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Details" textFill="WHITE">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Label>
+            <TableView fx:id="inventoryTableView" layoutX="555.0" layoutY="72.0" prefHeight="424.0" prefWidth="443.0">
+               <columns>
+                  <TableColumn prefWidth="75.0" text="C1" />
+                  <TableColumn prefWidth="103.20001220703125" text="C2" />
+               </columns>
+            </TableView>
+            <VBox layoutX="436.0" layoutY="73.0" prefHeight="178.0" prefWidth="100.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#actionShowEntrees" prefHeight="26.0" prefWidth="107.0" text="Entrees">
+                     <VBox.margin>
+                        <Insets bottom="8.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Beverages">
+                     <VBox.margin>
+                        <Insets bottom="8.0" top="8.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Desserts">
+                     <VBox.margin>
+                        <Insets bottom="8.0" top="8.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Sides">
+                     <VBox.margin>
+                        <Insets bottom="8.0" top="8.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Toppings">
+                     <VBox.margin>
+                        <Insets top="8.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+            <AnchorPane layoutX="47.0" layoutY="73.0" prefHeight="424.0" prefWidth="340.0" style="-fx-background-color: #FFFFFF;">
+               <children>
+                  <ImageView fitHeight="150.0" fitWidth="312.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </AnchorPane>
+            <VBox layoutX="436.0" layoutY="429.0" prefHeight="58.0" prefWidth="100.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Edit">
+                     <VBox.margin>
+                        <Insets bottom="8.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#actionDelete" prefHeight="26.0" prefWidth="107.0" text="Delete">
+                     <VBox.margin>
+                        <Insets top="8.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
          </children>
       </AnchorPane>
-      <VBox layoutX="440.0" layoutY="106.0" prefHeight="178.0" prefWidth="100.0">
-         <children>
-            <Button mnemonicParsing="false" onAction="#actionShowEntrees" prefHeight="26.0" prefWidth="107.0" text="Entrees">
-               <VBox.margin>
-                  <Insets bottom="8.0" />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Beverages">
-               <VBox.margin>
-                  <Insets bottom="8.0" top="8.0" />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Desserts">
-               <VBox.margin>
-                  <Insets bottom="8.0" top="8.0" />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Sides">
-               <VBox.margin>
-                  <Insets bottom="8.0" top="8.0" />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Toppings">
-               <VBox.margin>
-                  <Insets top="8.0" />
-               </VBox.margin>
-            </Button>
-         </children>
-      </VBox>
-      <Label layoutX="550.0" layoutY="71.0" prefHeight="34.0" prefWidth="128.0" text="Inventory">
-         <font>
-            <Font size="23.0" />
-         </font>
-      </Label>
-      <Label layoutX="79.0" layoutY="71.0" prefHeight="34.0" prefWidth="128.0" text="Details">
-         <font>
-            <Font size="23.0" />
-         </font>
-      </Label>
-      <VBox layoutX="440.0" layoutY="459.0" prefHeight="41.0" prefWidth="100.0">
-         <children>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Edit">
-               <VBox.margin>
-                  <Insets bottom="8.0" />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#actionDelete" prefHeight="26.0" prefWidth="107.0" text="Delete">
-               <VBox.margin>
-                  <Insets bottom="8.0" top="8.0" />
-               </VBox.margin>
-            </Button>
-         </children>
-      </VBox>
-   </children>
-</AnchorPane>
+   </center>
+</BorderPane>
