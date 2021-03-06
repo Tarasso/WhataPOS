@@ -27,7 +27,7 @@ public class WelcomeScreenController {
         window.show();
     }
     public void changeEmployeeLoginScreenPushed(ActionEvent event) throws IOException {
-        Parent employeeLoginScreenParent = FXMLLoader.load(getClass().getResource("EmployeeLoginScreen.fxml"));
+        Parent employeeLoginScreenParent = FXMLLoader.load(getClass().getResource("InventoryScreen.fxml"));
         Scene employeeLoginScreenScene = new Scene(employeeLoginScreenParent);
 
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
