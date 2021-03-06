@@ -107,3 +107,6 @@ fabric.properties
 # JavaFX library
 javafx-sdk-11.0.2
 
+# .idea
+.idea
+
