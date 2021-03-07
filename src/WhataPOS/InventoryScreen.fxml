@@ -5,7 +5,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -38,7 +37,7 @@
                   <Font size="23.0" />
                </font>
             </Label>
-            <Label layoutX="47.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Details" textFill="WHITE">
+            <Label layoutX="47.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Image" textFill="WHITE">
                <font>
                   <Font size="23.0" />
                </font>
@@ -78,67 +77,9 @@
                   </Button>
                </children>
             </VBox>
-            <AnchorPane layoutX="47.0" layoutY="73.0" prefHeight="424.0" prefWidth="340.0" style="-fx-background-color: #FFFFFF;">
+            <AnchorPane layoutX="47.0" layoutY="73.0" prefHeight="194.0" prefWidth="321.0" style="-fx-background-color: #FFFFFF;">
                <children>
                   <ImageView fitHeight="150.0" fitWidth="312.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-                  <VBox layoutX="25.0" layoutY="212.0" prefHeight="168.0" prefWidth="83.0">
-                     <children>
-                        <Label text="Name">
-                           <VBox.margin>
-                              <Insets bottom="8.0" top="8.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label text="Type">
-                           <VBox.margin>
-                              <Insets bottom="8.0" top="8.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label text="Quantity">
-                           <VBox.margin>
-                              <Insets bottom="8.0" top="8.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label text="Cost to make">
-                           <VBox.margin>
-                              <Insets bottom="8.0" top="8.0" />
-                           </VBox.margin>
-                        </Label>
-                        <Label text="Price">
-                           <VBox.margin>
-                              <Insets bottom="8.0" top="8.0" />
-                           </VBox.margin>
-                        </Label>
-                     </children>
-                  </VBox>
-                  <VBox layoutX="132.0" layoutY="212.0" prefHeight="168.0" prefWidth="179.0">
-                     <children>
-                        <TextField prefHeight="26.0" prefWidth="114.0">
-                           <VBox.margin>
-                              <Insets bottom="4.0" top="4.0" />
-                           </VBox.margin>
-                        </TextField>
-                        <TextField layoutX="10.0" layoutY="10.0">
-                           <VBox.margin>
-                              <Insets bottom="4.0" top="4.0" />
-                           </VBox.margin>
-                        </TextField>
-                        <TextField layoutX="10.0" layoutY="36.0">
-                           <VBox.margin>
-                              <Insets bottom="4.0" top="4.0" />
-                           </VBox.margin>
-                        </TextField>
-                        <TextField layoutX="10.0" layoutY="61.0">
-                           <VBox.margin>
-                              <Insets bottom="4.0" top="4.0" />
-                           </VBox.margin>
-                        </TextField>
-                        <TextField layoutX="10.0" layoutY="87.0">
-                           <VBox.margin>
-                              <Insets bottom="4.0" top="4.0" />
-                           </VBox.margin>
-                        </TextField>
-                     </children>
-                  </VBox>
                </children>
             </AnchorPane>
             <VBox layoutX="436.0" layoutY="387.0" prefHeight="58.0" prefWidth="100.0">
