@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.sql.*;
+
 import WhataPOS.JDBC;
 
 public class Main extends Application {

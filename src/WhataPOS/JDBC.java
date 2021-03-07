@@ -43,20 +43,6 @@ public class JDBC {
         } catch(Exception e){
             // Handle errors for Class.forName
             e.printStackTrace();
-        } finally {
-            // finally block used to close resources
-            try {
-                if(stmt != null)
-                    this.stmt.close();
-            } catch(SQLException se2){
-                // nothing to do
-            }
-            try {
-                if(conn != null)
-                    this.conn.close();
-            } catch(SQLException se) {
-                se.printStackTrace();
-            }
         }
     }
 
