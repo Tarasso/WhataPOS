@@ -34,5 +34,4 @@ public class Entree {
     public void setType(String type) {
         this.type = type;
     }
-
 }
