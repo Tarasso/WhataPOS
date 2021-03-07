@@ -40,7 +40,7 @@
             </Text>
             <ImageView fitHeight="300.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="file:/C:/Users/Minh%20Luu/Documents/GitHub/WhataPOS/assets/whataburger_logo.png" />
+                  <Image url="@assets/whataburger_logo.png" />
                </image>
             </ImageView>
             <Button mnemonicParsing="false" onAction="#changeOrderScreenPushed" text="Tap here to order">
