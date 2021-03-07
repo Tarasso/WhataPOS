@@ -56,22 +56,22 @@
                         <Insets bottom="8.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Beverages">
+                  <Button mnemonicParsing="false" onAction="#actionShowBeverages" prefHeight="26.0" prefWidth="107.0" text="Beverages">
                      <VBox.margin>
                         <Insets bottom="8.0" top="8.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Desserts">
+                  <Button mnemonicParsing="false" onAction="#actionShowDesserts" prefHeight="26.0" prefWidth="107.0" text="Desserts">
                      <VBox.margin>
                         <Insets bottom="8.0" top="8.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Sides">
+                  <Button mnemonicParsing="false" onAction="#actionShowSides" prefHeight="26.0" prefWidth="107.0" text="Sides">
                      <VBox.margin>
                         <Insets bottom="8.0" top="8.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Toppings">
+                  <Button mnemonicParsing="false" onAction="#actionShowToppings" prefHeight="26.0" prefWidth="107.0" text="Toppings">
                      <VBox.margin>
                         <Insets top="8.0" />
                      </VBox.margin>

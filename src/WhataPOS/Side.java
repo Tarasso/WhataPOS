@@ -3,11 +3,11 @@ package WhataPOS;
 public class Side {
     private String id;
     private String name;
-    private String availableQuantity;
+    private Integer availableQuantity;
     private Double costToMake;
     private Double salePrice;
 
-    public Side(String id, String name, String availableQuantity, Double costToMake, Double salePrice) {
+    public Side(String id, String name, Integer availableQuantity, Double costToMake, Double salePrice) {
         this.id = id;
         this.name = name;
         this.availableQuantity = availableQuantity;
@@ -21,8 +21,8 @@ public class Side {
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
 
-    public String getAvailableQuantity() {return availableQuantity;}
-    public void setAvailableQuantity(String availableQuantity) {this.availableQuantity = availableQuantity;}
+    public Integer getAvailableQuantity() {return availableQuantity;}
+    public void setAvailableQuantity(Integer availableQuantity) {this.availableQuantity = availableQuantity;}
 
     public Double getCostToMake() {return costToMake;}
     public void setCostToMake(Double costToMake) {this.costToMake = costToMake;}

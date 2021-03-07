@@ -1,6 +1,6 @@
 package WhataPOS;
 
-import java.util.Vector;
+import java.sql.Array;
 
 public class Entree {
     private String id;
@@ -9,9 +9,9 @@ public class Entree {
     private Integer availableQuantity;
     private Double costToMake;
     private Double salePrice;
-    private Vector<String> toppings;
+    private Array toppings;
 
-    public Entree(String id, String name, String type, Integer availableQuantity, Double costToMake, Double salePrice, Vector<String> toppings) {
+    public Entree(String id, String name, String type, Integer availableQuantity, Double costToMake, Double salePrice, Array toppings) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -39,6 +39,6 @@ public class Entree {
     public Double getSalePrice() {return salePrice;}
     public void setSalePrice(Double salePrice) {this.salePrice = salePrice;}
 
-    public Vector<String> getToppings() {return toppings;}
-    public void setToppings(Vector<String> toppings) {this.toppings = toppings;}
+    public Array getToppings() {return toppings;}
+    public void setToppings(Array toppings) {this.toppings = toppings;}
 }
