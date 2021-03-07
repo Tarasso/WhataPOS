@@ -20,20 +20,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import java.sql.*;
-import WhataPOS.JDBC;
+
 
 
 public class InventoryScreenController implements Initializable {
 
-
-    @FXML private TableView<Beverage> inventoryTableView;
-
-    public ObservableList<Entree> getEntrees() {
-        ObservableList<Entree> entrees = FXCollections.observableArrayList();
-        //entrees.add(new Entree("1", "Whataburger", "Burger"));
-        //entrees.add(new Entree("2", "Fishburger", "Fish"));
-        return entrees;
-    }
+    @FXML private TableView inventoryTableView;
 
     public ObservableList<Beverage> getBeverages() {
         ObservableList<Beverage> beverages = FXCollections.observableArrayList();
@@ -56,8 +48,109 @@ public class InventoryScreenController implements Initializable {
         return beverages;
     }
 
+    public ObservableList<Dessert> getDesserts() {
+        ObservableList<Dessert> desserts = FXCollections.observableArrayList();
+        try {
+            String sql = "select * from desserts";
+            ResultSet rs = JDBC.execQuery(sql);
+            while (rs.next()) {
+                desserts.add(new Dessert(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getInt("availableQuantity"),
+                        rs.getDouble("costToMake"),
+                        rs.getDouble("salePrice")
+                ));
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return desserts;
+    }
+
+    public ObservableList<Side> getSides() {
+        ObservableList<Side> sides = FXCollections.observableArrayList();
+        try {
+            String sql = "select * from sides";
+            ResultSet rs = JDBC.execQuery(sql);
+            while (rs.next()) {
+                sides.add(new Side(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getInt("availableQuantity"),
+                        rs.getDouble("costToMake"),
+                        rs.getDouble("salePrice")
+                ));
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return sides;
+    }
+
+    public ObservableList<Entree> getEntrees() {
+        ObservableList<Entree> entrees = FXCollections.observableArrayList();
+        try {
+            String sql = "select * from entrees";
+            ResultSet rs = JDBC.execQuery(sql);
+            while (rs.next()) {
+                entrees.add(new Entree(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getString("type"),
+                        rs.getInt("availableQuantity"),
+                        rs.getDouble("costToMake"),
+                        rs.getDouble("salePrice"),
+                        rs.getArray("toppings")
+                ));
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return entrees;
+    }
+
+    public ObservableList<Topping> getToppings() {
+        ObservableList<Topping> toppings = FXCollections.observableArrayList();
+        try {
+            String sql = "select * from toppings";
+            ResultSet rs = JDBC.execQuery(sql);
+            while (rs.next()) {
+                toppings.add(new Topping(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getInt("availableQuantity"),
+                        rs.getDouble("costToMake"),
+                        rs.getDouble("salePrice")
+                ));
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return toppings;
+    }
+
+    public ObservableList<Integer> getRecommendations() {
+        ObservableList<Integer> recs = FXCollections.observableArrayList();
+        try {
+            String sql = "select order from order_data";
+            ResultSet rs = JDBC.execQuery(sql);
+            while (rs.next()) {
+                //recs.add(rs.getArray());
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return recs;
+    }
+
     @FXML
-    public void actionShowEntrees(ActionEvent event) throws IOException {
+    public void actionShowBeverages(ActionEvent event) throws IOException {
 
         TableColumn<Beverage, String> idColumn = new TableColumn<>("id");
         idColumn.setMinWidth(20);
@@ -78,6 +171,136 @@ public class InventoryScreenController implements Initializable {
 
         inventoryTableView.getColumns().clear();
         inventoryTableView.setItems(getBeverages());
+        inventoryTableView.getColumns().addAll(
+                idColumn,
+                nameColumn,
+                quantityColumn,
+                costColumn,
+                priceColumn);
+
+    }
+
+    @FXML
+    public void actionShowDesserts(ActionEvent event) throws IOException {
+
+        TableColumn<Dessert, String> idColumn = new TableColumn<>("id");
+        idColumn.setMinWidth(20);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+
+        TableColumn<Dessert, String> nameColumn = new TableColumn<>("name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Dessert, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+
+        TableColumn<Dessert, Double> costColumn = new TableColumn<>("costToMake");
+        costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
+
+        TableColumn<Dessert, Double> priceColumn = new TableColumn<>("salePrice");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        inventoryTableView.getColumns().clear();
+        inventoryTableView.setItems(getDesserts());
+        inventoryTableView.getColumns().addAll(
+                idColumn,
+                nameColumn,
+                quantityColumn,
+                costColumn,
+                priceColumn);
+
+    }
+
+    @FXML
+    public void actionShowSides(ActionEvent event) throws IOException {
+
+        TableColumn<Side, String> idColumn = new TableColumn<>("id");
+        idColumn.setMinWidth(20);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+
+        TableColumn<Side, String> nameColumn = new TableColumn<>("name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Side, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+
+        TableColumn<Side, Double> costColumn = new TableColumn<>("costToMake");
+        costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
+
+        TableColumn<Side, Double> priceColumn = new TableColumn<>("salePrice");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        inventoryTableView.getColumns().clear();
+        inventoryTableView.setItems(getSides());
+        inventoryTableView.getColumns().addAll(
+                idColumn,
+                nameColumn,
+                quantityColumn,
+                costColumn,
+                priceColumn);
+
+    }
+
+    @FXML
+    public void actionShowEntrees(ActionEvent event) throws IOException {
+
+        TableColumn<Entree, String> idColumn = new TableColumn<>("id");
+        idColumn.setMinWidth(20);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<Entree, String> nameColumn = new TableColumn<>("name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Entree, String> typeColumn = new TableColumn<>("type");
+        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+        TableColumn<Entree, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+
+        TableColumn<Entree, Double> costColumn = new TableColumn<>("costToMake");
+        costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
+
+        TableColumn<Entree, Double> priceColumn = new TableColumn<>("salePrice");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        TableColumn<Entree, Array> toppingsColumn = new TableColumn<>("toppings");
+        toppingsColumn.setCellValueFactory(new PropertyValueFactory<>("toppings"));
+
+        inventoryTableView.getColumns().clear();
+        inventoryTableView.setItems(getEntrees());
+        inventoryTableView.getColumns().addAll(
+                idColumn,
+                nameColumn,
+                typeColumn,
+                quantityColumn,
+                costColumn,
+                priceColumn,
+                toppingsColumn);
+
+    }
+
+    @FXML
+    public void actionShowToppings(ActionEvent event) throws IOException {
+
+        TableColumn<Topping, String> idColumn = new TableColumn<>("id");
+        idColumn.setMinWidth(20);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<Topping, String> nameColumn = new TableColumn<>("name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Topping, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+
+        TableColumn<Topping, Double> costColumn = new TableColumn<>("costToMake");
+        costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
+
+        TableColumn<Topping, Double> priceColumn = new TableColumn<>("salePrice");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        inventoryTableView.getColumns().clear();
+        inventoryTableView.setItems(getToppings());
         inventoryTableView.getColumns().addAll(
                 idColumn,
                 nameColumn,
