@@ -20,7 +20,7 @@
          <children>
             <HBox>
                <children>
-                  <Button mnemonicParsing="false" onAction="" prefHeight="30.0" prefWidth="170.0" text="Return to Welcome Screen" />
+                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="170.0" text="Return to Welcome Screen" />
                   <Region HBox.hgrow="ALWAYS" />
                </children>
                <VBox.margin>
