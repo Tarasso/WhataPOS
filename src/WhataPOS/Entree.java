@@ -36,15 +36,10 @@ public class Entree {
     public Double getCostToMake() {return costToMake;}
     public void setCostToMake(Double costToMake) {this.costToMake = costToMake;}
 
-<<<<<<< HEAD
-    public void setType(String type) {
-        this.type = type;
-    }
-=======
     public Double getSalePrice() {return salePrice;}
     public void setSalePrice(Double salePrice) {this.salePrice = salePrice;}
 
     public Vector<String> getToppings() {return toppings;}
     public void setToppings(Vector<String> toppings) {this.toppings = toppings;}
->>>>>>> wip_liam
+
 }

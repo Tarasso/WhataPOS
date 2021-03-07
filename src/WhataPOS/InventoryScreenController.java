@@ -27,7 +27,7 @@ public class InventoryScreenController implements Initializable {
 
     public ObservableList<Entree> getEntrees() {
         ObservableList<Entree> entrees = FXCollections.observableArrayList();
-        entrees.add(new Entree("1", "Whataburger", "Burger"));
+        entrees.add(new Entree("1", "Whataburger", "Burger", ));
         entrees.add(new Entree("2", "Fishburger", "Fish"));
         return entrees;
     }
