@@ -6,4 +6,4 @@ all:
 	cp $(src_path)/*.fxml $(pkg_path)/WhataPOS
 
 run:
-	java -cp "$(pkg_path)" --module-path /usr/lib/jvm/java-11-openjfx/lib/ --add-modules javafx.controls,javafx.fxml WhataPOS.Main
+	java -cp "$(pkg_path):postgresql-42.2.19.jar" --module-path /usr/lib/jvm/java-11-openjfx/lib/ --add-modules javafx.controls,javafx.fxml WhataPOS.Main
