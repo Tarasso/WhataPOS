@@ -10,7 +10,16 @@ public class Employee {
     private String email;
     private String position;
 
-    public Employee(String id, String name, String username, String password, String homeAddress, String phoneNumber, String email, String position) {
+    public Employee(
+        String id,
+        String name,
+        String username,
+        String password,
+        String homeAddress,
+        String phoneNumber,
+        String email,
+        String position
+    ) {
         this.id = id;
         this.name = name;
         this.username = username;

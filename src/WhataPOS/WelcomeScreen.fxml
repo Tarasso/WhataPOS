@@ -18,7 +18,7 @@
             <HBox>
                <children>
                   <Region HBox.hgrow="ALWAYS" />
-                  <Button mnemonicParsing="false" onAction="#changeEmployeeLoginScreenPushed" prefHeight="29.0" prefWidth="97.0" text="Inventory" />
+                  <Button mnemonicParsing="false" onAction="#changeEmployeeLoginScreenPushed" prefHeight="29.0" prefWidth="97.0" text="Employee" />
                </children>
                <VBox.margin>
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />

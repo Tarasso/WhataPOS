@@ -17,70 +17,73 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.ResourceBundle;
-import java.util.Vector;
+
+import java.sql.*;
+import WhataPOS.JDBC;
 
 
 public class InventoryScreenController implements Initializable {
 
 
-    @FXML private TableView<Entree> inventoryTableView;
+    @FXML private TableView<Beverage> inventoryTableView;
 
     public ObservableList<Entree> getEntrees() {
         ObservableList<Entree> entrees = FXCollections.observableArrayList();
-        entrees.add(new Entree("1", "Whataburger", "Burger", 20, 200.0, 200.0, new Vector<String>(Arrays.asList("Cheese", "Tomato"))));
-        entrees.add(new Entree("2", "Fishburger", "Fish", 30, 300.0, 200.0, new Vector<String>(Arrays.asList("Cheese", "Tomato"))));
+        //entrees.add(new Entree("1", "Whataburger", "Burger"));
+        //entrees.add(new Entree("2", "Fishburger", "Fish"));
         return entrees;
+    }
+
+    public ObservableList<Beverage> getBeverages() {
+        ObservableList<Beverage> beverages = FXCollections.observableArrayList();
+        try {
+            String sql = "select * from beverages";
+            ResultSet rs = JDBC.execQuery(sql);
+            while (rs.next()) {
+                beverages.add(new Beverage(
+                            rs.getString("id"),
+                            rs.getString("name"),
+                            rs.getInt("availableQuantity"),
+                            rs.getDouble("costToMake"),
+                            rs.getDouble("salePrice")
+                        ));
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return beverages;
     }
 
     @FXML
     public void actionShowEntrees(ActionEvent event) throws IOException {
 
-        TableColumn<Entree, String> idColumn = new TableColumn<>("id");
+        TableColumn<Beverage, String> idColumn = new TableColumn<>("id");
         idColumn.setMinWidth(20);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
 
-        TableColumn<Entree, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setMinWidth(30);
+        TableColumn<Beverage, String> nameColumn = new TableColumn<>("name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-
-        TableColumn<Entree, String> typeColumn = new TableColumn<>("type");
-        typeColumn.setMinWidth(30);
-        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-
-
-        TableColumn<Entree, Integer> quantityColumn = new TableColumn<>("available quantity");
-        quantityColumn.setMinWidth(30);
+        TableColumn<Beverage, Integer> quantityColumn = new TableColumn<>("availableQuantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
 
+        TableColumn<Beverage, Double> costColumn = new TableColumn<>("costToMake");
+        costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
-        TableColumn<Entree, Integer> costToMakeColumn = new TableColumn<>("cost to make");
-        costToMakeColumn.setMinWidth(30);
-        costToMakeColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
-
-
-        TableColumn<Entree, Double> salePriceColumn = new TableColumn<>("sale price");
-        salePriceColumn.setMinWidth(30);
-        salePriceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
-
-        TableColumn<Entree, Vector<String>> toppingsColumn = new TableColumn<>("toppings");
-        toppingsColumn.setMinWidth(30);
-        toppingsColumn.setCellValueFactory(new PropertyValueFactory<>("toppings"));
-
+        TableColumn<Beverage, Double> priceColumn = new TableColumn<>("salePrice");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         inventoryTableView.getColumns().clear();
-        inventoryTableView.setItems(getEntrees());
+        inventoryTableView.setItems(getBeverages());
         inventoryTableView.getColumns().addAll(
                 idColumn,
                 nameColumn,
-                typeColumn,
                 quantityColumn,
-                costToMakeColumn,
-                salePriceColumn,
-                toppingsColumn);
+                costColumn,
+                priceColumn);
 
     }
 

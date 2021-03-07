@@ -15,8 +15,8 @@ public class JDBC {
     String USER;
     String PASS;
 
-    Connection conn = null;
-    Statement stmt = null;
+    static Connection conn = null;
+    static Statement stmt = null;
 
     public JDBC(
         String DB_URL,
@@ -43,26 +43,12 @@ public class JDBC {
         } catch(Exception e){
             // Handle errors for Class.forName
             e.printStackTrace();
-        } finally {
-            // finally block used to close resources
-            try {
-                if(stmt != null)
-                    this.stmt.close();
-            } catch(SQLException se2){
-                // nothing to do
-            }
-            try {
-                if(conn != null)
-                    this.conn.close();
-            } catch(SQLException se) {
-                se.printStackTrace();
-            }
         }
     }
 
-    public ResultSet execQuery(String sql_query) {
+    public static ResultSet execQuery(String sql_query) {
         try {
-            return this.stmt.executeQuery(sql_query);
+            return stmt.executeQuery(sql_query);
         } catch(SQLException se) {
             // Handle errors for JDBC
             se.printStackTrace();

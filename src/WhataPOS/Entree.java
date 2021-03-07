@@ -41,5 +41,4 @@ public class Entree {
 
     public Vector<String> getToppings() {return toppings;}
     public void setToppings(Vector<String> toppings) {this.toppings = toppings;}
-
 }
