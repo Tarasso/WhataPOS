@@ -17,7 +17,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 
 public class InventoryScreenController implements Initializable {
@@ -27,8 +29,8 @@ public class InventoryScreenController implements Initializable {
 
     public ObservableList<Entree> getEntrees() {
         ObservableList<Entree> entrees = FXCollections.observableArrayList();
-        entrees.add(new Entree("1", "Whataburger", "Burger", ));
-        entrees.add(new Entree("2", "Fishburger", "Fish"));
+        entrees.add(new Entree("1", "Whataburger", "Burger", 20, 200.0, 200.0, new Vector<String>(Arrays.asList("Cheese", "Tomato"))));
+        entrees.add(new Entree("2", "Fishburger", "Fish", 30, 300.0, 200.0, new Vector<String>(Arrays.asList("Cheese", "Tomato"))));
         return entrees;
     }
 
@@ -41,18 +43,44 @@ public class InventoryScreenController implements Initializable {
 
 
         TableColumn<Entree, String> nameColumn = new TableColumn<>("name");
+        nameColumn.setMinWidth(30);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
 
         TableColumn<Entree, String> typeColumn = new TableColumn<>("type");
+        typeColumn.setMinWidth(30);
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+
+        TableColumn<Entree, Integer> quantityColumn = new TableColumn<>("available quantity");
+        quantityColumn.setMinWidth(30);
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+
+
+        TableColumn<Entree, Integer> costToMakeColumn = new TableColumn<>("cost to make");
+        costToMakeColumn.setMinWidth(30);
+        costToMakeColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
+
+
+        TableColumn<Entree, Double> salePriceColumn = new TableColumn<>("sale price");
+        salePriceColumn.setMinWidth(30);
+        salePriceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        TableColumn<Entree, Vector<String>> toppingsColumn = new TableColumn<>("toppings");
+        toppingsColumn.setMinWidth(30);
+        toppingsColumn.setCellValueFactory(new PropertyValueFactory<>("toppings"));
+
 
         inventoryTableView.getColumns().clear();
         inventoryTableView.setItems(getEntrees());
         inventoryTableView.getColumns().addAll(
                 idColumn,
                 nameColumn,
-                typeColumn);
+                typeColumn,
+                quantityColumn,
+                costToMakeColumn,
+                salePriceColumn,
+                toppingsColumn);
 
     }
 

@@ -81,7 +81,7 @@
             <AnchorPane layoutX="47.0" layoutY="73.0" prefHeight="424.0" prefWidth="340.0" style="-fx-background-color: #FFFFFF;">
                <children>
                   <ImageView fitHeight="150.0" fitWidth="312.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-                  <VBox layoutX="25.0" layoutY="212.0" prefHeight="168.0" prefWidth="83.0">
+                  <VBox layoutX="22.0" layoutY="199.0" prefHeight="168.0" prefWidth="83.0">
                      <children>
                         <Label text="Name">
                            <VBox.margin>
@@ -110,7 +110,7 @@
                         </Label>
                      </children>
                   </VBox>
-                  <VBox layoutX="132.0" layoutY="212.0" prefHeight="168.0" prefWidth="179.0">
+                  <VBox layoutX="130.0" layoutY="199.0" prefHeight="168.0" prefWidth="179.0">
                      <children>
                         <TextField prefHeight="26.0" prefWidth="114.0">
                            <VBox.margin>
@@ -139,18 +139,14 @@
                         </TextField>
                      </children>
                   </VBox>
+                  <Button layoutX="203.0" layoutY="380.0" mnemonicParsing="false" onAction="#actionDelete" prefHeight="26.0" prefWidth="107.0" text="Update" />
                </children>
             </AnchorPane>
-            <VBox layoutX="436.0" layoutY="387.0" prefHeight="58.0" prefWidth="100.0">
+            <VBox layoutX="436.0" layoutY="428.0" prefHeight="58.0" prefWidth="100.0">
                <children>
                   <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Add">
                      <VBox.margin>
                         <Insets bottom="8.0" />
-                     </VBox.margin>
-                  </Button>
-                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Edit">
-                     <VBox.margin>
-                        <Insets bottom="8.0" top="8.0" />
                      </VBox.margin>
                   </Button>
                   <Button mnemonicParsing="false" onAction="#actionDelete" prefHeight="26.0" prefWidth="107.0" text="Delete">
