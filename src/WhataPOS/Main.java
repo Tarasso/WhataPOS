@@ -26,7 +26,6 @@ public class Main extends Application {
             "cosmicequation"
         );
         jdbc.newConnection();
-        ResultSet rs = jdbc.execQuery();
         launch(args);
         jdbc.closeConnection();
     }
