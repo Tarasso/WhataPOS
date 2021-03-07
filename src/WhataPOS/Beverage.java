@@ -7,7 +7,13 @@ public class Beverage {
     private Double costToMake;
     private Double salePrice;
 
-    public Beverage(String id, String name, Integer availableQuantity, Double costToMake, Double salePrice) {
+    public Beverage(
+        String id,
+        String name,
+        Integer availableQuantity,
+        Double costToMake,
+        Double salePrice
+    ) {
         this.id = id;
         this.name = name;
         this.availableQuantity = availableQuantity;

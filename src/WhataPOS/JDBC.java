@@ -15,8 +15,8 @@ public class JDBC {
     String USER;
     String PASS;
 
-    Connection conn = null;
-    Statement stmt = null;
+    static Connection conn = null;
+    static Statement stmt = null;
 
     public JDBC(
         String DB_URL,
@@ -46,9 +46,9 @@ public class JDBC {
         }
     }
 
-    public ResultSet execQuery(String sql_query) {
+    public static ResultSet execQuery(String sql_query) {
         try {
-            return this.stmt.executeQuery(sql_query);
+            return stmt.executeQuery(sql_query);
         } catch(SQLException se) {
             // Handle errors for JDBC
             se.printStackTrace();
