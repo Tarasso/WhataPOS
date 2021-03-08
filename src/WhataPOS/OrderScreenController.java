@@ -178,6 +178,7 @@ public class OrderScreenController implements Initializable {
         menuTableView.setItems(getEntrees());
         menuTableView.getColumns().addAll(nameColumn, priceColumn);
         topChoicesButton.setVisible(true);
+
     }
 
     @FXML
@@ -362,14 +363,13 @@ public class OrderScreenController implements Initializable {
     }
 
 
+
+
     public void actionPayItem(ActionEvent event) throws IOException, SQLException {
         ObservableList totalOrder = orderTableView.getItems();
 
         Array orderIDsSQL;
         String[] orderIDsJAVA = new String[totalOrder.size()];
-
-
-        List<String> orderIDsList = new ArrayList<String>();
 
         for (int i = 0; i < totalOrder.size(); i++) {
 
@@ -379,28 +379,26 @@ public class OrderScreenController implements Initializable {
 
                 case "WhataPOS.Beverage":
                     Beverage beverage = (Beverage) orderElement;
-                    //orderIDsJAVA[i] = beverage.getId();
-                    orderIDsList.add(beverage.getId());
+                    orderIDsJAVA[i] = beverage.getId();
                     break;
 
                 case "WhataPOS.Entree":
                     Entree entree = (Entree) orderElement;
-                    // orderIDsJAVA[i] = entree.getId();
-                    orderIDsList.add(entree.getId());
+                    orderIDsJAVA[i] = entree.getId();
                     break;
 
                 case "WhataPOS.Side":
                     Side side = (Side) orderElement;
-                    //orderIDsJAVA[i] = side.getId();
-                    orderIDsList.add(side.getId());
+                    orderIDsJAVA[i] = side.getId();
                     break;
 
                 case "WhataPOS.Dessert":
                     Dessert dessert = (Dessert) orderElement;
-                    //orderIDsJAVA[i] = dessert.getId();
-                    orderIDsList.add(dessert.getId());
+                    orderIDsJAVA[i] = dessert.getId();
                     break;
+
             }
+
         }
 
         ResultSet maxidRS = JDBC.execQuery("SELECT MAX(\"id\") as maxid from order_data");
@@ -410,11 +408,19 @@ public class OrderScreenController implements Initializable {
 
         orderIDsSQL = JDBC.conn.createArrayOf("text", orderIDsJAVA);
 
-        ResultSet newOrder = JDBC.execQuery("INSERT INTO order_data (\"id\", \"customer_id\", \"date\", \"order\")\n" +
-                "VALUES (maxid, 'U-1', date, '{\"E4\",\"S2\",\"B2\"}');");
+        String[] temp = (String[]) orderIDsSQL.getArray();
 
-        System.out.println(date);
-        System.out.println(maxid);
+        final String SQL_INSERT = "INSERT INTO order_data (\"id\", \"customer_id\", \"date\", \"order\") VALUES (?,?,?,?)";
+
+        PreparedStatement preparedStatement = JDBC.conn.prepareStatement(SQL_INSERT);
+
+        preparedStatement.setInt(1, maxid);
+        preparedStatement.setString(2, new String("U-1"));
+        preparedStatement.setString(3, date);
+        preparedStatement.setArray(4, orderIDsSQL);
+
+        preparedStatement.executeUpdate();
+
     }
 
 
@@ -431,6 +437,7 @@ public class OrderScreenController implements Initializable {
                 break;
         }
     }
+
 
 
     @Override
