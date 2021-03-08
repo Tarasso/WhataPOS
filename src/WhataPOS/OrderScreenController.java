@@ -12,16 +12,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import java.time.*;
 
+import javax.swing.*;
 import java.net.URL;
-import java.sql.Array;
+import java.sql.*;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.ResourceBundle;
-import java.util.Vector;
+import java.util.*;
+import java.util.Date;
+
+import WhataPOS.JDBC;
 
 public class OrderScreenController implements Initializable {
 
@@ -362,11 +366,70 @@ public class OrderScreenController implements Initializable {
                 break;
         }
 
+    }
 
 
+    public void actionPayItem(ActionEvent event) throws IOException, SQLException {
+        ObservableList totalOrder = orderTableView.getItems();
+
+        Array orderIDsSQL;
+        String[] orderIDsJAVA = new String[totalOrder.size()];
+
+
+        List<String> orderIDsList = new ArrayList<String>();
+
+        for (int i = 0; i < totalOrder.size(); i++){
+
+            var orderElement = totalOrder.get(i);
+
+            switch (totalOrder.get(i).getClass().getName()) {
+
+                case "WhataPOS.Beverage":
+                    Beverage beverage = (Beverage) orderElement;
+                    //orderIDsJAVA[i] = beverage.getId();
+                    orderIDsList.add(beverage.getId());
+                    break;
+
+                case "WhataPOS.Entree":
+                    Entree entree = (Entree) orderElement;
+                   // orderIDsJAVA[i] = entree.getId();
+                    orderIDsList.add(entree.getId());
+                    break;
+
+                case "WhataPOS.Side":
+                    Side side = (Side) orderElement;
+                    //orderIDsJAVA[i] = side.getId();
+                    orderIDsList.add(side.getId());
+                    break;
+
+                case "WhataPOS.Dessert":
+                    Dessert dessert = (Dessert) orderElement;
+                    //orderIDsJAVA[i] = dessert.getId();
+                    orderIDsList.add(dessert.getId());
+                    break;
+
+
+            }
+
+        }
+
+        ResultSet maxidRS = JDBC.execQuery("SELECT MAX(\"id\") as maxid from order_data");
+        maxidRS.next();
+        int maxid = maxidRS.getInt("maxid") + 1;
+        String date = LocalDate.now().toString();
+
+        orderIDsSQL = JDBC.conn.createArrayOf("text", orderIDsJAVA);
+
+        ResultSet newOrder = JDBC.execQuery("INSERT INTO order_data (\"id\", \"customer_id\", \"date\", \"order\")\n" +
+                "VALUES (maxid, 'U-1', date, '{\"E4\",\"S2\",\"B2\"}');");
+
+        System.out.println(date);
+        System.out.println(maxid);
 
 
     }
+
+
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
