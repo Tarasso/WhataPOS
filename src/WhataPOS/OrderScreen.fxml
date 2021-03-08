@@ -79,7 +79,7 @@
                </children>
             </AnchorPane>
             <Button layoutX="620.0" layoutY="458.0" mnemonicParsing="false" onAction="#actionSelectItem" prefHeight="26.0" prefWidth="107.0" text="Add" />
-            <Button layoutX="182.0" layoutY="458.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Pay" />
+            <Button layoutX="182.0" layoutY="458.0" mnemonicParsing="false" onAction="#actionPayItem" prefHeight="26.0" prefWidth="107.0" text="Pay" />
             <Button layoutX="14.0" layoutY="73.0" mnemonicParsing="false" onAction="#actionDeleteItem" prefHeight="31.0" prefWidth="26.0" text="X">
                <font>
                   <Font name="System Bold" size="12.0" />
