@@ -343,6 +343,7 @@ public class InventoryScreenController implements Initializable {
                     Entree selectedEntree = t.getTableView().getItems().get(t.getTablePosition().getRow());
                     selectedEntree.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
                     System.out.println(selectedEntree.getAvailableQuantity());
+
                 }
         );
         quantityColumn.setCellFactory(TextFieldTableCell.<Entree, Integer>forTableColumn(new IntegerStringConverter()));

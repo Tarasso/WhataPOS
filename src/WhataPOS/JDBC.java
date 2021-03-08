@@ -37,6 +37,7 @@ public class JDBC {
 
             // Return query creation object
             this.stmt = this.conn.createStatement();
+            System.out.println("Connection established");
         } catch(SQLException se) {
             // Handle errors for JDBC
             se.printStackTrace();
@@ -60,6 +61,7 @@ public class JDBC {
         try {
             this.stmt.close();
             this.conn.close();
+            System.out.println("Connection closed");
         } catch(SQLException se) {
             // Handle errors for JDBC
             se.printStackTrace();
