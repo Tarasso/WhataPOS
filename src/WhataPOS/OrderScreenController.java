@@ -417,8 +417,6 @@ public class OrderScreenController implements Initializable {
         System.out.println(maxid);
     }
 
-    }
-
 
     public void actionTopChoices(ActionEvent event) {
         var object = menuTableView.getItems().get(1);

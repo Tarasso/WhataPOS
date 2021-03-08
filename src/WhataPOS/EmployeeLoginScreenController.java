@@ -61,8 +61,6 @@ public class EmployeeLoginScreenController implements Initializable {
 
     }
 
-
-
     public void actionWelcomeScreen(ActionEvent event) throws IOException {
         Parent welcomeScreenParent = FXMLLoader.load(getClass().getResource("WelcomeScreen.fxml"));
         Scene welcomeScreenScene = new Scene(welcomeScreenParent);
