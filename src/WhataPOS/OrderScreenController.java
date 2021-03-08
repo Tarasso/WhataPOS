@@ -27,7 +27,6 @@ public class OrderScreenController implements Initializable {
 
     // Element tag ids
     @FXML private TableView menuTableView;
-    @FXML private ListView orderListView;
     @FXML private TextArea orderTextArea;
     @FXML private TableView orderTableView;
     private float orderTotal = 0;
@@ -234,67 +233,8 @@ public class OrderScreenController implements Initializable {
     public void actionSelectItem(ActionEvent event) throws IOException {
         var object = menuTableView.getSelectionModel().getSelectedItem();
 
-
         double totalAfterTax = 0;
-        /*
-        switch (object.getClass().getName()) {
-            case "WhataPOS.Beverage":
-                Beverage selectedBeverage = (Beverage) object;
-                orderListView.getItems().add(selectedBeverage.getName());
 
-                orderTotal += selectedBeverage.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
-
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
-
-                break;
-
-            case "WhataPOS.Entree":
-                Entree selectedEntree = (Entree) object;
-                orderListView.getItems().add(selectedEntree.getName());
-
-                orderTotal += selectedEntree.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
-
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
-
-                break;
-
-            case "WhataPOS.Side":
-                Side selectedSide = (Side) object;
-                orderListView.getItems().add(selectedSide.getName());
-
-                orderTotal += selectedSide.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
-
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
-
-                break;
-
-            case "WhataPOS.Dessert":
-                Dessert selectedDessert = (Dessert) object;
-                orderListView.getItems().add(selectedDessert.getName());
-
-                orderTotal += selectedDessert.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
-
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                        + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
-
-                break;
-        }
-        */
         switch (object.getClass().getName()) {
             case "WhataPOS.Beverage":
                 Beverage selectedBeverage = (Beverage) object;
