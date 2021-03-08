@@ -72,7 +72,7 @@
                   </Button>
                   <Button mnemonicParsing="false" onAction="#actionShowToppings" prefHeight="26.0" prefWidth="107.0" text="Toppings">
                      <VBox.margin>
-                        <Insets top="8.0" />
+                        <Insets bottom="8.0" top="8.0" />
                      </VBox.margin>
                   </Button>
                </children>
@@ -84,17 +84,17 @@
             </AnchorPane>
             <VBox layoutX="436.0" layoutY="387.0" prefHeight="58.0" prefWidth="100.0">
                <children>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Add">
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Top choices">
                      <VBox.margin>
                         <Insets bottom="8.0" />
                      </VBox.margin>
                   </Button>
-                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Edit">
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Trending up">
                      <VBox.margin>
                         <Insets bottom="8.0" top="8.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#actionDelete" prefHeight="26.0" prefWidth="107.0" text="Delete">
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Trending down">
                      <VBox.margin>
                         <Insets top="8.0" />
                      </VBox.margin>
