@@ -12,22 +12,16 @@ import java.io.IOException;
 
 public class WelcomeScreenController {
 
-    public void loginButtonClicked() {
-        System.out.println("User logged in...");
-    }
-
-    // Buttons
-
-    public void changeOrderScreenPushed(ActionEvent event) throws IOException {
-        Parent orderScreenParent = FXMLLoader.load(getClass().getResource("OrderScreen.fxml"));
-        Scene orderScreenScene = new Scene(orderScreenParent);
+    public void actionCustomerLogin(ActionEvent event) throws IOException {
+        Parent customerLoginParent = FXMLLoader.load(getClass().getResource("CustomerLoginScreen.fxml"));
+        Scene customerLoginScene = new Scene(customerLoginParent);
 
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
-        window.setScene(orderScreenScene);
+        window.setScene(customerLoginScene);
         window.show();
     }
-    public void changeEmployeeLoginScreenPushed(ActionEvent event) throws IOException {
-        Parent employeeLoginScreenParent = FXMLLoader.load(getClass().getResource("InventoryScreen.fxml"));
+    public void actionEmployeeLogin(ActionEvent event) throws IOException {
+        Parent employeeLoginScreenParent = FXMLLoader.load(getClass().getResource("EmployeeLoginScreen.fxml"));
         Scene employeeLoginScreenScene = new Scene(employeeLoginScreenParent);
 
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();

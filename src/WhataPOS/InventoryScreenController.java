@@ -25,8 +25,6 @@ import java.util.ResourceBundle;
 
 import java.sql.*;
 
-
-
 public class InventoryScreenController implements Initializable {
 
     @FXML private TableView inventoryTableView;
@@ -138,13 +136,93 @@ public class InventoryScreenController implements Initializable {
         return toppings;
     }
 
-    public ObservableList<Integer> getRecommendations() {
-        ObservableList<Integer> recs = FXCollections.observableArrayList();
+    public ObservableList<Entree> getRecEntrees() {
+        ObservableList<Entree> recs = FXCollections.observableArrayList();
         try {
-            String sql = "select order from order_data";
+            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'E%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
             ResultSet rs = JDBC.execQuery(sql);
+
+            String[] id = new String[3];
+            int i = 0;
             while (rs.next()) {
-                //recs.add(rs.getArray());
+                id[i++] = rs.getString("unnest");
+            }
+
+            for (i = 0; i < id.length; ++i) {
+                rs = JDBC.execQuery("select * from \"entrees\" where \"id\" = '" + id[i] + "'");
+                while (rs.next()) {
+                    recs.add(new Entree(
+                            rs.getString("id"),
+                            rs.getString("name"),
+                            rs.getString("type"),
+                            rs.getInt("availableQuantity"),
+                            rs.getDouble("costToMake"),
+                            rs.getDouble("salePrice"),
+                            rs.getArray("toppings")
+                    ));
+                }
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return recs;
+    }
+
+    public ObservableList<Beverage> getRecBeverages() {
+        ObservableList<Beverage> recs = FXCollections.observableArrayList();
+        try {
+            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'B%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            ResultSet rs = JDBC.execQuery(sql);
+
+            String[] id = new String[3];
+            int i = 0;
+            while (rs.next()) {
+                id[i++] = rs.getString("unnest");
+            }
+
+            for (i = 0; i < id.length; ++i) {
+                rs = JDBC.execQuery("select * from \"beverages\" where \"id\" = '" + id[i] + "'");
+                while (rs.next()) {
+                    recs.add(new Beverage(
+                                rs.getString("id"),
+                                rs.getString("name"),
+                                rs.getInt("availableQuantity"),
+                                rs.getDouble("costToMake"),
+                                rs.getDouble("salePrice")
+                    ));
+                }
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return recs;
+    }
+
+    public ObservableList<Dessert> getRecDesserts() {
+        ObservableList<Dessert> recs = FXCollections.observableArrayList();
+        try {
+            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'D%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            ResultSet rs = JDBC.execQuery(sql);
+
+            String[] id = new String[3];
+            int i = 0;
+            while (rs.next()) {
+                id[i++] = rs.getString("unnest");
+            }
+
+            for (i = 0; i < id.length; ++i) {
+                rs = JDBC.execQuery("select * from \"desserts\" where \"id\" = '" + id[i] + "'");
+                while (rs.next()) {
+                    recs.add(new Dessert(
+                            rs.getString("id"),
+                            rs.getString("name"),
+                            rs.getInt("availableQuantity"),
+                            rs.getDouble("costToMake"),
+                            rs.getDouble("salePrice")
+                    ));
+                }
             }
         } catch(SQLException se) {
             // Handle errors for JDBC
@@ -159,7 +237,6 @@ public class InventoryScreenController implements Initializable {
         TableColumn<Beverage, String> idColumn = new TableColumn<>("id");
         idColumn.setMinWidth(20);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-
 
         TableColumn<Beverage, String> nameColumn = new TableColumn<>("name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -343,7 +420,6 @@ public class InventoryScreenController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         inventoryTableView.getColumns().clear();
         inventoryTableView.setEditable(true);
-        inventoryTableView.getStylesheets().add("/CSS/topChoices.css");
     }
 
 
