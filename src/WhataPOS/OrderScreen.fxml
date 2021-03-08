@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -28,10 +29,10 @@
          </children>
       </VBox>
    </top>
-   <center>
-      <AnchorPane prefHeight="530.0" prefWidth="1090.0" BorderPane.alignment="CENTER">
+   <right>
+      <AnchorPane prefHeight="530.0" prefWidth="1090.0" style="-fx-background-color: #F39E26;" BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="555.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Menu" textFill="WHITE">
+            <Label layoutX="537.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Menu" textFill="WHITE">
                <font>
                   <Font size="23.0" />
                </font>
@@ -41,8 +42,8 @@
                   <Font size="23.0" />
                </font>
             </Label>
-            <TableView fx:id="menuTableView" layoutX="555.0" layoutY="71.0" prefHeight="367.0" prefWidth="443.0" style="-fx-background-color: #FFFFFF;" />
-            <VBox layoutX="436.0" layoutY="73.0" prefHeight="164.0" prefWidth="100.0">
+            <TableView fx:id="menuTableView" layoutX="537.0" layoutY="70.0" prefHeight="371.0" prefWidth="272.0" style="-fx-background-color: #FFFFFF;" />
+            <VBox layoutX="425.0" layoutY="73.0" prefHeight="164.0" prefWidth="100.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#actionShowEntrees" prefHeight="26.0" prefWidth="107.0" text="Entrees">
                      <VBox.margin>
@@ -64,22 +65,37 @@
                         <Insets bottom="8.0" top="8.0" />
                      </VBox.margin>
                   </Button>
+                  <Button fx:id="topChoicesButton" mnemonicParsing="false" onAction="#actionTopChoices" prefHeight="26.0" prefWidth="107.0" text="Top choices">
+                     <VBox.margin>
+                        <Insets top="8.0" />
+                     </VBox.margin>
+                  </Button>
                </children>
             </VBox>
-            <AnchorPane layoutX="47.0" layoutY="73.0" prefHeight="375.0" prefWidth="378.0" style="-fx-background-color: #525252;">
+            <AnchorPane layoutX="47.0" layoutY="73.0" prefHeight="375.0" prefWidth="378.0" style="-fx-background-color: #F39E26;">
                <children>
                   <TextArea fx:id="orderTextArea" layoutX="13.0" layoutY="288.0" prefHeight="78.0" prefWidth="350.0" />
                   <TableView fx:id="orderTableView" layoutX="11.0" layoutY="-1.0" prefHeight="275.0" prefWidth="352.0" />
                </children>
             </AnchorPane>
-            <Button layoutX="723.0" layoutY="458.0" mnemonicParsing="false" onAction="#actionSelectItem" prefHeight="26.0" prefWidth="107.0" text="Add" />
-            <Button layoutX="182.0" layoutY="458.0" mnemonicParsing="false" onAction="#actionPayItem" prefHeight="26.0" prefWidth="107.0" text="Pay" />
-            <Button layoutY="71.0" mnemonicParsing="false" onAction="#actionDeleteItem" prefHeight="42.0" prefWidth="42.0" text="X">
+            <Button layoutX="620.0" layoutY="458.0" mnemonicParsing="false" onAction="#actionSelectItem" prefHeight="26.0" prefWidth="107.0" text="Add" />
+            <Button layoutX="182.0" layoutY="458.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Pay" />
+            <Button layoutX="14.0" layoutY="73.0" mnemonicParsing="false" onAction="#actionDeleteItem" prefHeight="31.0" prefWidth="26.0" text="X">
                <font>
-                  <Font name="System Bold" size="25.0" />
+                  <Font name="System Bold" size="12.0" />
                </font>
             </Button>
+            <AnchorPane layoutX="830.0" layoutY="70.0" prefHeight="168.0" prefWidth="180.0" style="-fx-background-color: #FFFFFF;">
+               <children>
+                  <ImageView fitHeight="156.0" fitWidth="169.0" layoutX="6.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </AnchorPane>
+            <Label layoutX="830.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Image" textFill="WHITE">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
-   </center>
+   </right>
 </BorderPane>
