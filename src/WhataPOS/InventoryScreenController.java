@@ -138,21 +138,6 @@ public class InventoryScreenController implements Initializable {
         return toppings;
     }
 
-    public ObservableList<Integer> getRecommendations() {
-        ObservableList<Integer> recs = FXCollections.observableArrayList();
-        try {
-            String sql = "select order from order_data";
-            ResultSet rs = JDBC.execQuery(sql);
-            while (rs.next()) {
-                //recs.add(rs.getArray());
-            }
-        } catch(SQLException se) {
-            // Handle errors for JDBC
-            se.printStackTrace();
-        }
-        return recs;
-    }
-
     @FXML
     public void actionShowBeverages(ActionEvent event) throws IOException {
 
@@ -343,7 +328,6 @@ public class InventoryScreenController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         inventoryTableView.getColumns().clear();
         inventoryTableView.setEditable(true);
-        inventoryTableView.getStylesheets().add("/CSS/topChoices.css");
     }
 
 

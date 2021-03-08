@@ -178,7 +178,6 @@ public class OrderScreenController implements Initializable {
         menuTableView.setItems(getEntrees());
         menuTableView.getColumns().addAll(nameColumn, priceColumn);
         topChoicesButton.setVisible(true);
-
     }
 
     @FXML
@@ -362,8 +361,6 @@ public class OrderScreenController implements Initializable {
         }
     }
 
-    }
-
 
     public void actionPayItem(ActionEvent event) throws IOException, SQLException {
         ObservableList totalOrder = orderTableView.getItems();
@@ -374,7 +371,7 @@ public class OrderScreenController implements Initializable {
 
         List<String> orderIDsList = new ArrayList<String>();
 
-        for (int i = 0; i < totalOrder.size(); i++){
+        for (int i = 0; i < totalOrder.size(); i++) {
 
             var orderElement = totalOrder.get(i);
 
@@ -388,7 +385,7 @@ public class OrderScreenController implements Initializable {
 
                 case "WhataPOS.Entree":
                     Entree entree = (Entree) orderElement;
-                   // orderIDsJAVA[i] = entree.getId();
+                    // orderIDsJAVA[i] = entree.getId();
                     orderIDsList.add(entree.getId());
                     break;
 
@@ -403,10 +400,7 @@ public class OrderScreenController implements Initializable {
                     //orderIDsJAVA[i] = dessert.getId();
                     orderIDsList.add(dessert.getId());
                     break;
-
-
             }
-
         }
 
         ResultSet maxidRS = JDBC.execQuery("SELECT MAX(\"id\") as maxid from order_data");
@@ -421,6 +415,7 @@ public class OrderScreenController implements Initializable {
 
         System.out.println(date);
         System.out.println(maxid);
+    }
 
 
     public void actionTopChoices(ActionEvent event) {
@@ -436,7 +431,6 @@ public class OrderScreenController implements Initializable {
                 break;
         }
     }
-
 
 
     @Override

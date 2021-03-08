@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -11,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="1024.0" style="-fx-background-color: #525252;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WhataPOS.EmployeeLoginScreenController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="1024.0" style="-fx-background-color: #525252;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="WhataPOS.CustomerLoginScreenController">
    <top>
       <VBox style="-fx-background-color: #FF7802;" BorderPane.alignment="CENTER">
          <children>
@@ -28,11 +27,11 @@
       </VBox>
    </top>
    <center>
-      <VBox alignment="CENTER" style="-fx-background-color: #525252;" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" style="-fx-background-color: #F39E26;" BorderPane.alignment="CENTER">
          <children>
             <HBox alignment="CENTER">
                <children>
-                  <Label text="Username" textFill="WHITE">
+                  <Label text="My first name is" textFill="WHITE">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
@@ -43,15 +42,12 @@
                         <Insets bottom="3.0" />
                      </padding>
                   </Label>
-                  <TextField fx:id="usernameTextField">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin></TextField>
+                  <TextField fx:id="firstNameTextField" />
                </children>
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Label text="Password" textFill="WHITE">
+                  <Label text="My last name is" textFill="WHITE">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
@@ -62,14 +58,14 @@
                         <Insets bottom="3.0" />
                      </padding>
                   </Label>
-                  <PasswordField fx:id="passwordField">
+                  <TextField fx:id="lastNameTextField">
                      <HBox.margin>
-                        <Insets left="6.0" />
+                        <Insets left="2.0" />
                      </HBox.margin>
-                  </PasswordField>
+                  </TextField>
                </children>
             </HBox>
-            <Button mnemonicParsing="false" onAction="#actionOrderScreen" text="Login">
+            <Button mnemonicParsing="false" onAction="#actionOrderScreen" text="Let's order">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
