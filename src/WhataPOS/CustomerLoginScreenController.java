@@ -8,7 +8,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -17,10 +16,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class EmployeeLoginScreenController implements Initializable {
+public class CustomerLoginScreenController implements Initializable {
 
-    @FXML private TextField usernameTextField;
-    @FXML private PasswordField passwordField;
+    @FXML private TextField firstNameTextField;
+    @FXML private TextField lastNameTextField;
 
 
     @Override
@@ -39,20 +38,20 @@ public class EmployeeLoginScreenController implements Initializable {
     }
 
     public void actionOrderScreen(ActionEvent event) throws IOException {
-        Window unWindowOwner = usernameTextField.getScene().getWindow();
-        Window pwdWindowOwner = passwordField.getScene().getWindow();
+        Window fnWindowOwner = firstNameTextField.getScene().getWindow();
+        Window lnWindowOwner = lastNameTextField.getScene().getWindow();
 
-        if (usernameTextField.getText().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, unWindowOwner, "Username is empty UwU", "Form error!");
+        if (firstNameTextField.getText().isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, fnWindowOwner, "First name is empty UwU", "Form error!");
             return;
         }
 
-        if (passwordField.getText().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, pwdWindowOwner, "Password is empty UwU", "Form error!");
+        if (lastNameTextField.getText().isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, lnWindowOwner, "Last name is empty UwU", "Form error!");
             return;
         }
 
-        Parent orderScreenParent = FXMLLoader.load(getClass().getResource("InventoryScreen.fxml"));
+        Parent orderScreenParent = FXMLLoader.load(getClass().getResource("OrderScreen.fxml"));
         Scene orderScreenScene = new Scene(orderScreenParent);
 
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -60,6 +59,8 @@ public class EmployeeLoginScreenController implements Initializable {
         window.show();
 
     }
+
+
 
     public void actionWelcomeScreen(ActionEvent event) throws IOException {
         Parent welcomeScreenParent = FXMLLoader.load(getClass().getResource("WelcomeScreen.fxml"));

@@ -13,15 +13,17 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
+import javafx.util.converter.DoubleStringConverter;
 
+import javax.sound.midi.SysexMessage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import java.sql.*;
-
-
 
 public class InventoryScreenController implements Initializable {
 
@@ -134,13 +136,93 @@ public class InventoryScreenController implements Initializable {
         return toppings;
     }
 
-    public ObservableList<Integer> getRecommendations() {
-        ObservableList<Integer> recs = FXCollections.observableArrayList();
+    public ObservableList<Entree> getRecEntrees() {
+        ObservableList<Entree> recs = FXCollections.observableArrayList();
         try {
-            String sql = "select order from order_data";
+            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'E%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
             ResultSet rs = JDBC.execQuery(sql);
+
+            String[] id = new String[3];
+            int i = 0;
             while (rs.next()) {
-                //recs.add(rs.getArray());
+                id[i++] = rs.getString("unnest");
+            }
+
+            for (i = 0; i < id.length; ++i) {
+                rs = JDBC.execQuery("select * from \"entrees\" where \"id\" = '" + id[i] + "'");
+                while (rs.next()) {
+                    recs.add(new Entree(
+                            rs.getString("id"),
+                            rs.getString("name"),
+                            rs.getString("type"),
+                            rs.getInt("availableQuantity"),
+                            rs.getDouble("costToMake"),
+                            rs.getDouble("salePrice"),
+                            rs.getArray("toppings")
+                    ));
+                }
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return recs;
+    }
+
+    public ObservableList<Beverage> getRecBeverages() {
+        ObservableList<Beverage> recs = FXCollections.observableArrayList();
+        try {
+            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'B%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            ResultSet rs = JDBC.execQuery(sql);
+
+            String[] id = new String[3];
+            int i = 0;
+            while (rs.next()) {
+                id[i++] = rs.getString("unnest");
+            }
+
+            for (i = 0; i < id.length; ++i) {
+                rs = JDBC.execQuery("select * from \"beverages\" where \"id\" = '" + id[i] + "'");
+                while (rs.next()) {
+                    recs.add(new Beverage(
+                                rs.getString("id"),
+                                rs.getString("name"),
+                                rs.getInt("availableQuantity"),
+                                rs.getDouble("costToMake"),
+                                rs.getDouble("salePrice")
+                    ));
+                }
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return recs;
+    }
+
+    public ObservableList<Dessert> getRecDesserts() {
+        ObservableList<Dessert> recs = FXCollections.observableArrayList();
+        try {
+            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'D%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            ResultSet rs = JDBC.execQuery(sql);
+
+            String[] id = new String[3];
+            int i = 0;
+            while (rs.next()) {
+                id[i++] = rs.getString("unnest");
+            }
+
+            for (i = 0; i < id.length; ++i) {
+                rs = JDBC.execQuery("select * from \"desserts\" where \"id\" = '" + id[i] + "'");
+                while (rs.next()) {
+                    recs.add(new Dessert(
+                            rs.getString("id"),
+                            rs.getString("name"),
+                            rs.getInt("availableQuantity"),
+                            rs.getDouble("costToMake"),
+                            rs.getDouble("salePrice")
+                    ));
+                }
             }
         } catch(SQLException se) {
             // Handle errors for JDBC
@@ -155,7 +237,6 @@ public class InventoryScreenController implements Initializable {
         TableColumn<Beverage, String> idColumn = new TableColumn<>("id");
         idColumn.setMinWidth(20);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-
 
         TableColumn<Beverage, String> nameColumn = new TableColumn<>("name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -257,6 +338,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Entree, Integer> quantityColumn = new TableColumn<>("availableQuantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        quantityColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Entree, Integer> t) -> {
+                    Entree selectedEntree = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedEntree.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
+                    System.out.println(selectedEntree.getAvailableQuantity());
+                }
+        );
+        quantityColumn.setCellFactory(TextFieldTableCell.<Entree, Integer>forTableColumn(new IntegerStringConverter()));
 
         TableColumn<Entree, Double> costColumn = new TableColumn<>("costToMake");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
@@ -330,7 +419,7 @@ public class InventoryScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         inventoryTableView.getColumns().clear();
-        inventoryTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        inventoryTableView.setEditable(true);
     }
 
 
