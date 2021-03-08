@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.net.URL;
 import java.sql.Array;
 
@@ -29,11 +30,11 @@ public class OrderScreenController implements Initializable {
     @FXML private TableView menuTableView;
     @FXML private TextArea orderTextArea;
     @FXML private TableView orderTableView;
+    @FXML private Button topChoicesButton;
+
+
     private float orderTotal = 0;
     private final double TAXPERCENT = 1.0825;
-
-
-
 
     // Gathers data for beverages from database
     public ObservableList<Beverage> getBeverages() {
@@ -162,71 +163,69 @@ public class OrderScreenController implements Initializable {
     @FXML
     public void actionShowEntrees(ActionEvent event) throws IOException {
 
-        TableColumn<Entree, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setMinWidth(20);
+        TableColumn<Entree, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Entree, String> priceColumn = new TableColumn<>("salePrice");
+        TableColumn<Entree, Double> priceColumn = new TableColumn<>("Price");
         priceColumn.setMinWidth(20);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         menuTableView.getColumns().clear();
         menuTableView.setItems(getEntrees());
         menuTableView.getColumns().addAll(nameColumn, priceColumn);
+        topChoicesButton.setVisible(true);
 
     }
 
     @FXML
     public void actionShowBeverages(ActionEvent event) throws IOException {
-
-        TableColumn<Beverage, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setMinWidth(20);
+        TableColumn<Beverage, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Beverage, String> priceColumn = new TableColumn<>("salePrice");
+        TableColumn<Beverage, Double> priceColumn = new TableColumn<>("Price");
         priceColumn.setMinWidth(20);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         menuTableView.getColumns().clear();
         menuTableView.setItems(getBeverages());
         menuTableView.getColumns().addAll(nameColumn, priceColumn);
+        topChoicesButton.setVisible(true);
     }
 
     @FXML
     public void actionShowDesserts(ActionEvent event) throws IOException {
 
-        TableColumn<Dessert, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setMinWidth(20);
+        TableColumn<Dessert, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Dessert, String> priceColumn = new TableColumn<>("salePrice");
+        TableColumn<Dessert, Double> priceColumn = new TableColumn<>("Price");
         priceColumn.setMinWidth(20);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         menuTableView.getColumns().clear();
         menuTableView.setItems(getDesserts());
         menuTableView.getColumns().addAll(nameColumn, priceColumn);
+        topChoicesButton.setVisible(true);
     }
 
     @FXML
     public void actionShowSides(ActionEvent event) throws IOException {
 
-        TableColumn<Side, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setMinWidth(20);
+        TableColumn<Side, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Side, String> priceColumn = new TableColumn<>("salePrice");
+        TableColumn<Side, Double> priceColumn = new TableColumn<>("Price");
         priceColumn.setMinWidth(20);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         menuTableView.getColumns().clear();
         menuTableView.setItems(getSides());
         menuTableView.getColumns().addAll(nameColumn, priceColumn);
-    }
-
-    @FXML
-    public void actionShowToppings(ActionEvent event) throws IOException {
-
+        topChoicesButton.setVisible(true);
     }
 
     @FXML
@@ -299,7 +298,6 @@ public class OrderScreenController implements Initializable {
     public void actionDeleteItem(ActionEvent event) throws IOException{
         var object = orderTableView.getSelectionModel().getSelectedItem();
 
-
         double totalAfterTax = 0;
 
         switch (object.getClass().getName()) {
@@ -357,30 +355,39 @@ public class OrderScreenController implements Initializable {
                         "Order Total: " + String.format("%.2f", orderTotal) + "\n"
                                 + "Total After Tax: " + String.format("%.2f", totalAfterTax)
                 );
-
-
                 break;
         }
+    }
 
-
-
-
-
+    public void actionTopChoices(ActionEvent event) {
+        var object = menuTableView.getItems().get(1);
+        switch (object.getClass().getName()) {
+            case "WhataPOS.Entree":
+                break;
+            case "WhataPOS.Beverage":
+                break;
+            case "WhataPOS.Side":
+                break;
+            case "WhataPOS.Dessert":
+                break;
+        }
     }
 
     @Override
     public void initialize (URL url, ResourceBundle resourceBundle) {
         orderTextArea.setEditable(false);
 
-        TableColumn<Side, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setMinWidth(20);
+        TableColumn<Side, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Side, String> priceColumn = new TableColumn<>("salePrice");
-        priceColumn.setMinWidth(20);
+        TableColumn<Side, String> priceColumn = new TableColumn<>("Price");
+        priceColumn.setMinWidth(120);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         orderTableView.getColumns().addAll(nameColumn, priceColumn);
+
+        topChoicesButton.setVisible(false);
     }
 
 }
