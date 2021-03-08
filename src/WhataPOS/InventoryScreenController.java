@@ -13,8 +13,12 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
+import javafx.util.converter.DoubleStringConverter;
 
+import javax.sound.midi.SysexMessage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -134,6 +138,21 @@ public class InventoryScreenController implements Initializable {
         return toppings;
     }
 
+    public ObservableList<Integer> getRecommendations() {
+        ObservableList<Integer> recs = FXCollections.observableArrayList();
+        try {
+            String sql = "select order from order_data";
+            ResultSet rs = JDBC.execQuery(sql);
+            while (rs.next()) {
+                //recs.add(rs.getArray());
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return recs;
+    }
+
     @FXML
     public void actionShowBeverages(ActionEvent event) throws IOException {
 
@@ -242,6 +261,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Entree, Integer> quantityColumn = new TableColumn<>("availableQuantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        quantityColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Entree, Integer> t) -> {
+                    Entree selectedEntree = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedEntree.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
+                    System.out.println(selectedEntree.getAvailableQuantity());
+                }
+        );
+        quantityColumn.setCellFactory(TextFieldTableCell.<Entree, Integer>forTableColumn(new IntegerStringConverter()));
 
         TableColumn<Entree, Double> costColumn = new TableColumn<>("costToMake");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
@@ -315,7 +342,8 @@ public class InventoryScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         inventoryTableView.getColumns().clear();
-        inventoryTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        inventoryTableView.setEditable(true);
+        inventoryTableView.getStylesheets().add("/CSS/topChoices.css");
     }
 
 
