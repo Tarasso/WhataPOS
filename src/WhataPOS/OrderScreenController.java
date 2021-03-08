@@ -310,6 +310,19 @@ public class OrderScreenController implements Initializable {
     }
 
     public void actionDeleteItem(ActionEvent event) throws IOException{
+
+        Window orderTableOwner =  orderTableView.getScene().getWindow();
+
+        if (Bindings.isEmpty(orderTableView.getItems()).get()) {
+            showAlert(Alert.AlertType.ERROR, orderTableOwner, "Order is Empty", "Error");
+            return;
+        }
+
+        if (Bindings.isEmpty(orderTableView.getSelectionModel().getSelectedItems()).get()) {
+            showAlert(Alert.AlertType.ERROR, orderTableOwner, "No item is selected", "Error");
+            return;
+        }
+
         var object = orderTableView.getSelectionModel().getSelectedItem();
 
         double totalAfterTax = 0;
@@ -372,9 +385,6 @@ public class OrderScreenController implements Initializable {
                 break;
         }
     }
-
-
-
 
     public void actionPayItem(ActionEvent event) throws IOException, SQLException {
         Window orderTableOwner =  orderTableView.getScene().getWindow();
@@ -440,7 +450,7 @@ public class OrderScreenController implements Initializable {
 
         preparedStatement.executeUpdate();
         orderTextArea.setText(
-                "Order Placed! Your Order's ID is " + maxid
+                "Order Placed! Your Order's ID is " + maxid + "."
         );
         orderTableView.getItems().clear();
 
