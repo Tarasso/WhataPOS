@@ -1,5 +1,6 @@
 package WhataPOS;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,6 +27,7 @@ import java.util.*;
 import java.util.Date;
 
 import WhataPOS.JDBC;
+import javafx.stage.Window;
 
 public class OrderScreenController implements Initializable {
 
@@ -35,9 +37,18 @@ public class OrderScreenController implements Initializable {
     @FXML private TableView orderTableView;
     @FXML private Button topChoicesButton;
 
-
     private float orderTotal = 0;
     private final double TAXPERCENT = 1.0825;
+
+    // Standard alert box for different uses
+    public static void showAlert(Alert.AlertType alertType, Window owner, String message, String title) {
+        Alert alert = new Alert(alertType);
+        alert.setContentText(message);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.initOwner(owner);
+        alert.show();
+    }
 
     // Gathers data for beverages from database
     public ObservableList<Beverage> getBeverages() {
@@ -366,7 +377,15 @@ public class OrderScreenController implements Initializable {
 
 
     public void actionPayItem(ActionEvent event) throws IOException, SQLException {
+        Window orderTableOwner =  orderTableView.getScene().getWindow();
+
+        if (Bindings.isEmpty(orderTableView.getItems()).get()) {
+            showAlert(Alert.AlertType.ERROR, orderTableOwner, "Order is Empty", "Error");
+            return;
+        }
+
         ObservableList totalOrder = orderTableView.getItems();
+
 
         Array orderIDsSQL;
         String[] orderIDsJAVA = new String[totalOrder.size()];
@@ -420,6 +439,12 @@ public class OrderScreenController implements Initializable {
         preparedStatement.setArray(4, orderIDsSQL);
 
         preparedStatement.executeUpdate();
+        orderTextArea.setText(
+                "Order Placed! Your Order's ID is " + maxid
+        );
+        orderTableView.getItems().clear();
+
+
 
     }
 
