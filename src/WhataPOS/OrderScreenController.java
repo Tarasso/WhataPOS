@@ -553,18 +553,8 @@ public class OrderScreenController implements Initializable {
     @FXML
     public void actionShowRecBeverages(ActionEvent event) throws IOException {
 
-        TableColumn<Beverage, String> idColumn = new TableColumn<>("id");
-        idColumn.setMinWidth(20);
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-
         TableColumn<Beverage, String> nameColumn = new TableColumn<>("name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<Beverage, Integer> quantityColumn = new TableColumn<>("availableQuantity");
-        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
-
-        TableColumn<Beverage, Double> costColumn = new TableColumn<>("costToMake");
-        costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
         TableColumn<Beverage, Double> priceColumn = new TableColumn<>("salePrice");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
@@ -572,30 +562,15 @@ public class OrderScreenController implements Initializable {
         menuTableView.getColumns().clear();
         menuTableView.setItems(getRecBeverages());
         menuTableView.getColumns().addAll(
-                idColumn,
                 nameColumn,
-                quantityColumn,
-                costColumn,
                 priceColumn);
 
     }
 
     @FXML
     public void actionShowRecDesserts(ActionEvent event) throws IOException {
-
-        TableColumn<Dessert, String> idColumn = new TableColumn<>("id");
-        idColumn.setMinWidth(20);
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-
         TableColumn<Dessert, String> nameColumn = new TableColumn<>("name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<Dessert, Integer> quantityColumn = new TableColumn<>("availableQuantity");
-        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
-
-        TableColumn<Dessert, Double> costColumn = new TableColumn<>("costToMake");
-        costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
         TableColumn<Dessert, Double> priceColumn = new TableColumn<>("salePrice");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
@@ -603,49 +578,24 @@ public class OrderScreenController implements Initializable {
         menuTableView.getColumns().clear();
         menuTableView.setItems(getRecDesserts());
         menuTableView.getColumns().addAll(
-                idColumn,
                 nameColumn,
-                quantityColumn,
-                costColumn,
                 priceColumn);
 
     }
 
     @FXML
     public void actionShowRecEntrees(ActionEvent event) throws IOException {
-
-        TableColumn<Entree, String> idColumn = new TableColumn<>("id");
-        idColumn.setMinWidth(20);
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-
         TableColumn<Entree, String> nameColumn = new TableColumn<>("name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<Entree, String> typeColumn = new TableColumn<>("type");
-        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-
-        TableColumn<Entree, Integer> quantityColumn = new TableColumn<>("availableQuantity");
-        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
-
-        TableColumn<Entree, Double> costColumn = new TableColumn<>("costToMake");
-        costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
         TableColumn<Entree, Double> priceColumn = new TableColumn<>("salePrice");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
-        TableColumn<Entree, Array> toppingsColumn = new TableColumn<>("toppings");
-        toppingsColumn.setCellValueFactory(new PropertyValueFactory<>("toppings"));
-
         menuTableView.getColumns().clear();
         menuTableView.setItems(getRecEntrees());
         menuTableView.getColumns().addAll(
-                idColumn,
                 nameColumn,
-                typeColumn,
-                quantityColumn,
-                costColumn,
-                priceColumn,
-                toppingsColumn);
+                priceColumn);
 
     }
 
