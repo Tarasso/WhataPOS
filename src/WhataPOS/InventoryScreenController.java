@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -28,6 +29,7 @@ import java.sql.*;
 public class InventoryScreenController implements Initializable {
 
     @FXML private TableView inventoryTableView;
+    @FXML private Button topChoicesButton;
 
     public ObservableList<Beverage> getBeverages() {
         ObservableList<Beverage> beverages = FXCollections.observableArrayList();
