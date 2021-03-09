@@ -402,6 +402,18 @@ public class InventoryScreenController implements Initializable {
 
     }
 
+    public void actionTopChoices(ActionEvent event) {
+        var object = inventoryTableView.getItems().get(1);
+        switch (object.getClass().getName()) {
+            case "WhataPOS.Entree":
+                break;
+            case "WhataPOS.Beverage":
+                break;
+            case "WhataPOS.Dessert":
+                break;
+        }
+    }
+
     // Does not work with selected items
     @FXML
     public void actionDelete(ActionEvent event) throws IOException {
