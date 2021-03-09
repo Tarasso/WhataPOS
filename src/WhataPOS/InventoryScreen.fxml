@@ -5,7 +5,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -32,23 +31,18 @@
    <center>
       <AnchorPane prefHeight="530.0" prefWidth="1090.0" BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="555.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Inventory" textFill="WHITE">
+            <Label layoutX="166.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Inventory" textFill="WHITE">
                <font>
                   <Font size="23.0" />
                </font>
             </Label>
-            <Label layoutX="47.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Image" textFill="WHITE">
-               <font>
-                  <Font size="23.0" />
-               </font>
-            </Label>
-            <TableView fx:id="inventoryTableView" layoutX="555.0" layoutY="72.0" prefHeight="424.0" prefWidth="443.0" style="-fx-background-color: #FFFFFF;">
+            <TableView fx:id="inventoryTableView" layoutX="166.0" layoutY="72.0" prefHeight="424.0" prefWidth="832.0" style="-fx-background-color: #FFFFFF;">
                <columns>
                   <TableColumn prefWidth="75.0" text="C1" />
                   <TableColumn prefWidth="103.20001220703125" text="C2" />
                </columns>
             </TableView>
-            <VBox layoutX="436.0" layoutY="73.0" prefHeight="178.0" prefWidth="100.0">
+            <VBox layoutX="38.0" layoutY="72.0" prefHeight="178.0" prefWidth="100.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#actionShowEntrees" prefHeight="26.0" prefWidth="107.0" text="Entrees">
                      <VBox.margin>
@@ -72,29 +66,24 @@
                   </Button>
                   <Button mnemonicParsing="false" onAction="#actionShowToppings" prefHeight="26.0" prefWidth="107.0" text="Toppings">
                      <VBox.margin>
-                        <Insets top="8.0" />
+                        <Insets bottom="8.0" top="8.0" />
                      </VBox.margin>
                   </Button>
                </children>
             </VBox>
-            <AnchorPane layoutX="47.0" layoutY="73.0" prefHeight="194.0" prefWidth="321.0" style="-fx-background-color: #FFFFFF;">
+            <VBox layoutX="38.0" layoutY="387.0" prefHeight="58.0" prefWidth="100.0">
                <children>
-                  <ImageView fitHeight="150.0" fitWidth="312.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </AnchorPane>
-            <VBox layoutX="436.0" layoutY="387.0" prefHeight="58.0" prefWidth="100.0">
-               <children>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Add">
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Top choices">
                      <VBox.margin>
                         <Insets bottom="8.0" />
                      </VBox.margin>
                   </Button>
-                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Edit">
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Trending up">
                      <VBox.margin>
                         <Insets bottom="8.0" top="8.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#actionDelete" prefHeight="26.0" prefWidth="107.0" text="Delete">
+                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Trending down">
                      <VBox.margin>
                         <Insets top="8.0" />
                      </VBox.margin>

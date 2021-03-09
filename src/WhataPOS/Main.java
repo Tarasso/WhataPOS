@@ -26,6 +26,13 @@ public class Main extends Application {
             "liam_h",
             "cosmicequation"
         );
+        /*
+        JDBC jdbc = new JDBC(
+            "jdbc:postgresql://csce-315-db.engr.tamu.edu/db901_group9_project2",
+            "kylelamb1324",
+            "426005497"
+        );
+        */
         jdbc.newConnection();
         launch(args);
         jdbc.closeConnection();
