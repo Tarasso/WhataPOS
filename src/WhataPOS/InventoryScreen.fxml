@@ -67,7 +67,7 @@
             </VBox>
             <VBox layoutX="38.0" layoutY="387.0" prefHeight="58.0" prefWidth="100.0">
                <children>
-                  <Button fx:id="topChoicesButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Top choices">
+                  <Button fx:id="topChoicesButton" mnemonicParsing="false" onAction="#actionTopChoices" prefHeight="26.0" prefWidth="107.0" text="Top choices">
                      <VBox.margin>
                         <Insets bottom="8.0" />
                      </VBox.margin>
