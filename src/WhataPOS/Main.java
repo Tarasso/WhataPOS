@@ -21,18 +21,18 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        /*
         JDBC jdbc = new JDBC(
             "jdbc:postgresql://47.186.232.151:63333/db901_group9_project2",
             "liam_h",
             "cosmicequation"
         );
-        */
+        /*
         JDBC jdbc = new JDBC(
             "jdbc:postgresql://csce-315-db.engr.tamu.edu/db901_group9_project2",
             "kylelamb1324",
             "426005497"
         );
+        */
         jdbc.newConnection();
         launch(args);
         jdbc.closeConnection();
