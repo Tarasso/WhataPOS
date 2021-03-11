@@ -402,20 +402,6 @@ public class InventoryScreenController implements Initializable {
 
     }
 
-    public void actionTopChoices(ActionEvent event) {
-        var object = inventoryTableView.getItems().get(1);
-        switch (object.getClass().getName()) {
-            case "WhataPOS.Entree":
-                break;
-            case "WhataPOS.Beverage":
-                break;
-            case "WhataPOS.Dessert":
-                break;
-        }
-    }
-
-    public var
-
     // Does not work with selected items
     @FXML
     public void actionDelete(ActionEvent event) throws IOException {
@@ -439,5 +425,124 @@ public class InventoryScreenController implements Initializable {
         inventoryTableView.setEditable(true);
     }
 
+    @FXML
+    public void actionShowRecBeverages(ActionEvent event) throws IOException {
 
+        TableColumn<Beverage, String> idColumn = new TableColumn<>("id");
+        idColumn.setMinWidth(20);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<Beverage, String> nameColumn = new TableColumn<>("name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Beverage, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+
+        TableColumn<Beverage, Double> costColumn = new TableColumn<>("costToMake");
+        costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
+
+        TableColumn<Beverage, Double> priceColumn = new TableColumn<>("salePrice");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        inventoryTableView.getColumns().clear();
+        inventoryTableView.setItems(getRecBeverages());
+        inventoryTableView.getColumns().addAll(
+                idColumn,
+                nameColumn,
+                quantityColumn,
+                costColumn,
+                priceColumn);
+
+    }
+
+    @FXML
+    public void actionShowRecDesserts(ActionEvent event) throws IOException {
+
+        TableColumn<Dessert, String> idColumn = new TableColumn<>("id");
+        idColumn.setMinWidth(20);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+
+        TableColumn<Dessert, String> nameColumn = new TableColumn<>("name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Dessert, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+
+        TableColumn<Dessert, Double> costColumn = new TableColumn<>("costToMake");
+        costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
+
+        TableColumn<Dessert, Double> priceColumn = new TableColumn<>("salePrice");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        inventoryTableView.getColumns().clear();
+        inventoryTableView.setItems(getRecDesserts());
+        inventoryTableView.getColumns().addAll(
+                idColumn,
+                nameColumn,
+                quantityColumn,
+                costColumn,
+                priceColumn);
+
+    }
+
+    @FXML
+    public void actionShowRecEntrees(ActionEvent event) throws IOException {
+
+        TableColumn<Entree, String> idColumn = new TableColumn<>("id");
+        idColumn.setMinWidth(20);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<Entree, String> nameColumn = new TableColumn<>("name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Entree, String> typeColumn = new TableColumn<>("type");
+        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+        TableColumn<Entree, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+
+        TableColumn<Entree, Double> costColumn = new TableColumn<>("costToMake");
+        costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
+
+        TableColumn<Entree, Double> priceColumn = new TableColumn<>("salePrice");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        TableColumn<Entree, Array> toppingsColumn = new TableColumn<>("toppings");
+        toppingsColumn.setCellValueFactory(new PropertyValueFactory<>("toppings"));
+
+        inventoryTableView.getColumns().clear();
+        inventoryTableView.setItems(getRecEntrees());
+        inventoryTableView.getColumns().addAll(
+                idColumn,
+                nameColumn,
+                typeColumn,
+                quantityColumn,
+                costColumn,
+                priceColumn,
+                toppingsColumn);
+
+    }
+
+    public void actionTopChoices(ActionEvent event) {
+        var object = inventoryTableView.getItems().get(1);
+        try {
+            switch (object.getClass().getName()) {
+                case "WhataPOS.Entree":
+                    getRecEntrees();
+                    actionShowRecEntrees(event);
+                    break;
+                case "WhataPOS.Beverage":
+                    getRecBeverages();
+                    actionShowRecBeverages(event);
+                    break;
+                case "WhataPOS.Dessert":
+                    getRecDesserts();
+                    actionShowRecDesserts(event);
+                    break;
+            }
+        } catch(IOException ex) {
+            System.out.println(ex.toString());
+        }
+    }
 }
