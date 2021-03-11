@@ -14,6 +14,7 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class CustomerLoginScreenController implements Initializable {
@@ -37,7 +38,7 @@ public class CustomerLoginScreenController implements Initializable {
         alert.show();
     }
 
-    public void actionOrderScreen(ActionEvent event) throws IOException {
+    public void actionOrderScreen(ActionEvent event) throws IOException, SQLException {
         Window fnWindowOwner = firstNameTextField.getScene().getWindow();
         Window lnWindowOwner = lastNameTextField.getScene().getWindow();
 
@@ -50,6 +51,8 @@ public class CustomerLoginScreenController implements Initializable {
             showAlert(Alert.AlertType.ERROR, lnWindowOwner, "Last name is empty UwU", "Form error!");
             return;
         }
+
+        Order order = new Order(firstNameTextField.getText(), lastNameTextField.getText());
 
         Parent orderScreenParent = FXMLLoader.load(getClass().getResource("OrderScreen.fxml"));
         Scene orderScreenScene = new Scene(orderScreenParent);

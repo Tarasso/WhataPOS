@@ -15,7 +15,12 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+
+import WhataPOS.JDBC;
 
 public class EmployeeLoginScreenController implements Initializable {
 
@@ -38,7 +43,7 @@ public class EmployeeLoginScreenController implements Initializable {
         alert.show();
     }
 
-    public void actionOrderScreen(ActionEvent event) throws IOException {
+    public void actionOrderScreen(ActionEvent event) throws IOException, SQLException {
         Window unWindowOwner = usernameTextField.getScene().getWindow();
         Window pwdWindowOwner = passwordField.getScene().getWindow();
 
@@ -49,6 +54,19 @@ public class EmployeeLoginScreenController implements Initializable {
 
         if (passwordField.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, pwdWindowOwner, "Password is empty UwU", "Form error!");
+            return;
+        }
+
+        final String EMPLOYEE_CHECK = "SELECT \"id\" FROM employees WHERE \"username\" = ? AND \"password\" = ?";
+
+        PreparedStatement preparedStatement = JDBC.conn.prepareStatement(EMPLOYEE_CHECK);
+        preparedStatement.setString(1, usernameTextField.getText());
+        preparedStatement.setString(2, passwordField.getText());
+        ResultSet result = preparedStatement.executeQuery();
+
+        if(result.next() == false)
+        {
+            showAlert(Alert.AlertType.ERROR, pwdWindowOwner, "You shall not pass!", "Unrecognized username or passoword");
             return;
         }
 
