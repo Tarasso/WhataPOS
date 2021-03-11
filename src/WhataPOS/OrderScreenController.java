@@ -37,6 +37,7 @@ public class OrderScreenController implements Initializable {
     @FXML private TableView orderTableView;
     @FXML private Button topChoicesButton;
 
+
     private float orderTotal = 0;
     private final double TAXPERCENT = 1.0825;
 
@@ -246,6 +247,13 @@ public class OrderScreenController implements Initializable {
     public void actionSelectItem(ActionEvent event) throws IOException {
         var object = menuTableView.getSelectionModel().getSelectedItem();
 
+        Window orderTableOwner =  orderTableView.getScene().getWindow();
+
+        if (Bindings.isEmpty(menuTableView.getSelectionModel().getSelectedItems()).get()) {
+            showAlert(Alert.AlertType.ERROR, orderTableOwner, "No item is selected", "Error");
+            return;
+        }
+
         double totalAfterTax = 0;
 
         switch (object.getClass().getName()) {
@@ -318,10 +326,6 @@ public class OrderScreenController implements Initializable {
             return;
         }
 
-        if (Bindings.isEmpty(orderTableView.getSelectionModel().getSelectedItems()).get()) {
-            showAlert(Alert.AlertType.ERROR, orderTableOwner, "No item is selected", "Error");
-            return;
-        }
 
         var object = orderTableView.getSelectionModel().getSelectedItem();
 
