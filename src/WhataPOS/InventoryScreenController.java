@@ -414,6 +414,8 @@ public class InventoryScreenController implements Initializable {
         }
     }
 
+    public var
+
     // Does not work with selected items
     @FXML
     public void actionDelete(ActionEvent event) throws IOException {
