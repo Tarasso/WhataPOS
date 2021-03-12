@@ -170,6 +170,11 @@ public class OrderScreenController implements Initializable {
         Parent welcomeScreenParent = FXMLLoader.load(getClass().getResource("WelcomeScreen.fxml"));
         Scene welcomeScreenScene = new Scene(welcomeScreenParent);
 
+        // Reset customer
+        Order.fname = "";
+        Order.lname = "";
+        Order.customer_id = "";
+
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(welcomeScreenScene);
         window.show();
@@ -447,8 +452,10 @@ public class OrderScreenController implements Initializable {
 
         PreparedStatement preparedStatement = JDBC.conn.prepareStatement(SQL_INSERT);
 
+        System.out.println(Order.fname + " " + Order.lname);
+
         preparedStatement.setInt(1, maxid);
-        preparedStatement.setString(2, new String("U-1"));
+        preparedStatement.setString(2, Order.customer_id);
         preparedStatement.setString(3, date);
         preparedStatement.setArray(4, orderIDsSQL);
 
