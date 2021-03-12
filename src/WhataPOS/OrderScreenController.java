@@ -251,6 +251,12 @@ public class OrderScreenController implements Initializable {
     @FXML
     public void actionSelectItem(ActionEvent event) throws IOException {
         var object = menuTableView.getSelectionModel().getSelectedItem();
+        Window menuTableOwner =  menuTableView.getScene().getWindow();
+
+        if (Bindings.isEmpty(menuTableView.getSelectionModel().getSelectedItems()).get()) {
+            showAlert(Alert.AlertType.ERROR, menuTableOwner, "No item is selected", "Error");
+            return;
+        }
 
         Window orderTableOwner =  orderTableView.getScene().getWindow();
 
