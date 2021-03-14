@@ -448,7 +448,6 @@ public class OrderScreenController implements Initializable {
 
             case "WhataPOS.Entree":
                 Entree selectedEntree = (Entree) object;
-
                 quantity = checkAvailableQuantity("entrees", selectedEntree.getId());
 
                 if (quantity <= 0) {
@@ -466,10 +465,25 @@ public class OrderScreenController implements Initializable {
                     window.initModality(Modality.APPLICATION_MODAL);
                     window.setScene(selectToppingScene);
 
-                    // Things to do before launch
-                    controller.setInitToppings(new Vector<Topping>(Arrays.asList(
-                            new Topping("1", "Test 1", 12, 10.0, 10.0),
-                            new Topping("2", "Test 1", 12, 10.0, 10.0))));
+                    // Things to do before launch: set default toppings
+                    var toppingsArray = selectedEntree.getToppings().getArray();
+                    String[] stringToppings = (String[]) toppingsArray;
+                    Vector<Topping> defaultToppings = new Vector<>();
+                    for(String topping : stringToppings)
+                    {
+                        String sql = "select * from toppings where id = \'" + topping + "\'";
+                        ResultSet rs = JDBC.execQuery(sql);
+                        while (rs.next()) {
+                            defaultToppings.add(new Topping(
+                                    rs.getString("id"),
+                                    rs.getString("name"),
+                                    rs.getInt("availableQuantity"),
+                                    rs.getDouble("costToMake"),
+                                    rs.getDouble("salePrice")
+                            ));
+                        }
+                    }
+                    controller.setInitToppings(defaultToppings);
 
                     window.showAndWait();
 
@@ -481,7 +495,8 @@ public class OrderScreenController implements Initializable {
                     }
 
                     // Put the new array of toppings here
-//                    selectedEntree.setToppings(toppings.toArray());
+                    Array toppingsForDB = JDBC.conn.createArrayOf("text", stringToppings);
+                    selectedEntree.setToppings(toppingsForDB);
                     orderTableView.getItems().add(selectedEntree);
 
 
@@ -650,6 +665,7 @@ public class OrderScreenController implements Initializable {
 
         Array orderIDsSQL;
         String[] orderIDsJAVA = new String[totalOrder.size()];
+        Vector items = new Vector();
 
         for (int i = 0; i < totalOrder.size(); i++) {
 
@@ -660,21 +676,30 @@ public class OrderScreenController implements Initializable {
                 case "WhataPOS.Beverage":
                     Beverage beverage = (Beverage) orderElement;
                     orderIDsJAVA[i] = beverage.getId();
+                    items.add(beverage);
                     break;
 
                 case "WhataPOS.Entree":
                     Entree entree = (Entree) orderElement;
                     orderIDsJAVA[i] = entree.getId();
+                    items.add(entree);
+//                    System.out.println(entree.getName());
+//                    var toppingsArray = entree.getToppings().getArray();
+//                    String[] stringToppings = (String[]) toppingsArray;
+//                    for(String s : stringToppings)
+//                        System.out.println(s);
                     break;
 
                 case "WhataPOS.Side":
                     Side side = (Side) orderElement;
                     orderIDsJAVA[i] = side.getId();
+                    items.add(side);
                     break;
 
                 case "WhataPOS.Dessert":
                     Dessert dessert = (Dessert) orderElement;
                     orderIDsJAVA[i] = dessert.getId();
+                    items.add(dessert);
                     break;
 
             }
@@ -686,11 +711,15 @@ public class OrderScreenController implements Initializable {
         int maxid = maxidRS.getInt("maxid") + 1;
         String date = LocalDate.now().toString();
 
+        // TODO process items vector
+        String dummyJson = "{\"E5_0\": [\"T1\", \"T3\", \"T7\", \"T8\", \"T9\"], \"E1_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"E7_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"S4_0\": [], \"S1_0\": [], \"S3_0\": [], \"B4_0\": [], \"B5_0\": [], \"B2_0\": [], \"D1_0\": [], \"D1_1\": []}";
+        //PGObject jsonObj = new PGObject();
+
         orderIDsSQL = JDBC.conn.createArrayOf("text", orderIDsJAVA);
 
         String[] temp = (String[]) orderIDsSQL.getArray();
 
-        final String SQL_INSERT = "INSERT INTO order_data (\"id\", \"customer_id\", \"date\", \"order\") VALUES (?,?,?,?)";
+        final String SQL_INSERT = "INSERT INTO neworderdata (\"id\", \"customer_id\", \"date\", \"order\") VALUES (?,?,?,cast(? as json))";
 
         PreparedStatement preparedStatement = JDBC.conn.prepareStatement(SQL_INSERT);
 
@@ -699,7 +728,7 @@ public class OrderScreenController implements Initializable {
         preparedStatement.setInt(1, maxid);
         preparedStatement.setString(2, Order.customer_id);
         preparedStatement.setString(3, date);
-        preparedStatement.setArray(4, orderIDsSQL);
+        preparedStatement.setString(4, dummyJson);
 
         preparedStatement.executeUpdate();
         orderTextArea.setText(
