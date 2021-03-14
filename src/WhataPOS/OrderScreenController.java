@@ -586,7 +586,7 @@ public class OrderScreenController implements Initializable {
 
         Map<String, Integer> id_occurences = new HashMap<>();
         Map<String, String[]> id_to_toppings = new HashMap<>();
-
+        System.out.println("size: " + items.size());
         for(Object o : items)
         {
             if(o instanceof Entree)
@@ -596,7 +596,6 @@ public class OrderScreenController implements Initializable {
                     id_occurences.put(entree.getId(), id_occurences.get(entree.getId()) + 1);
                 else
                     id_occurences.put(entree.getId(), 0);
-
                 String newId = entree.getId() + "_" + id_occurences.get(entree.getId());
                 Array a = entree.getToppings();
                 var temp = entree.getToppings().getArray();
@@ -718,11 +717,11 @@ public class OrderScreenController implements Initializable {
                         Entree entree = (Entree) orderElement;
                         orderIDsJAVA[i] = entree.getId();
                         items.add(entree);
-//                    System.out.println(entree.getName());
-//                    var toppingsArray = entree.getToppings().getArray();
-//                    String[] stringToppings = (String[]) toppingsArray;
-//                    for(String s : stringToppings)
-//                        System.out.println(s);
+                        System.out.println(entree.getName());
+                        var toppingsArray = entree.getToppings().getArray();
+                        String[] stringToppings = (String[]) toppingsArray;
+                        for(String s : stringToppings)
+                            System.out.println(s);
                         break;
 
                     case "WhataPOS.Side":
