@@ -598,7 +598,10 @@ public class OrderScreenController implements Initializable {
                     id_occurences.put(entree.getId(), 0);
 
                 String newId = entree.getId() + "_" + id_occurences.get(entree.getId());
-                id_to_toppings.put(newId, (String[]) entree.getToppings().getArray());
+                Array a = entree.getToppings();
+                var temp = entree.getToppings().getArray();
+                String[] stringToppings = (String[]) temp;
+                id_to_toppings.put(newId, stringToppings);
             }
             else if(o instanceof Beverage)
             {
@@ -607,6 +610,10 @@ public class OrderScreenController implements Initializable {
                     id_occurences.put(beverage.getId(), id_occurences.get(beverage.getId()) + 1);
                 else
                     id_occurences.put(beverage.getId(), 0);
+
+                String[] emptyarr = {""};
+                String newId = beverage.getId() + "_" + id_occurences.get(beverage.getId());
+                id_to_toppings.put(newId, emptyarr);
             }
             else if(o instanceof Dessert)
             {
@@ -615,6 +622,10 @@ public class OrderScreenController implements Initializable {
                     id_occurences.put(dessert.getId(), id_occurences.get(dessert.getId()) + 1);
                 else
                     id_occurences.put(dessert.getId(), 0);
+
+                String[] emptyarr = {""};
+                String newId = dessert.getId() + "_" + id_occurences.get(dessert.getId());
+                id_to_toppings.put(newId, emptyarr);
             }
             else if(o instanceof Side)
             {
@@ -623,6 +634,10 @@ public class OrderScreenController implements Initializable {
                     id_occurences.put(side.getId(), id_occurences.get(side.getId()) + 1);
                 else
                     id_occurences.put(side.getId(), 0);
+
+                String[] emptyarr = {""};
+                String newId = side.getId() + "_" + id_occurences.get(side.getId());
+                id_to_toppings.put(newId, emptyarr);
             }
         }
 
@@ -727,28 +742,18 @@ public class OrderScreenController implements Initializable {
             }
 
 
-//        System.out.println("max current id: " + maxid);
             ZoneId z = ZoneId.of("America/Chicago");
             LocalDate date = LocalDate.now(z);
 
             // TODO process items vector
             String jsonToInsert = convert(items);
 
-            //String dummyJson = "{\"E5_0\": [\"T1\", \"T3\", \"T7\", \"T8\", \"T9\"], \"E1_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"E7_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"S4_0\": [], \"S1_0\": [], \"S3_0\": [], \"B4_0\": [], \"B5_0\": [], \"B2_0\": [], \"D1_0\": [], \"D1_1\": []}";
-            //PGObject jsonObj = new PGObject();
-
-            orderIDsSQL = JDBC.conn.createArrayOf("text", orderIDsJAVA);
-
-            String[] temp = (String[]) orderIDsSQL.getArray();
-
-//        final String SQL_INSERT = "INSERT INTO order_data (\"id\", \"customer_id\", \"date\", \"order\") VALUES (?,?,?,cast(? as json))";
             final String SQL_INSERT = "INSERT INTO order_data (\"customer_id\", \"date\", \"order\") VALUES (?,?,cast(? as json))";
 
             PreparedStatement preparedStatement = JDBC.conn.prepareStatement(SQL_INSERT);
 
             System.out.println(Order.fname + " " + Order.lname);
 
-//        preparedStatement.setInt(1, maxid);
             preparedStatement.setString(1, Order.customer_id);
             preparedStatement.setObject(2, date);
             preparedStatement.setString(3, jsonToInsert);
