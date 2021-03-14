@@ -36,13 +36,15 @@ public class OrderScreenController implements Initializable {
 
     // Element tag ids
     @FXML private TableView menuTableView;
-    @FXML private TextArea orderTextArea;
     @FXML private TableView orderTableView;
+
+    @FXML private TextArea orderTextArea;
+
     @FXML private Button topChoicesButton;
     @FXML private Button editToppingButton;
+    @FXML private Button deleteButton;
+    @FXML private Button payButton;
 
-
-    private float orderTotal = 0;
     private final double TAXPERCENT = 1.0825;
 
     // Standard alert box for different uses
@@ -55,6 +57,18 @@ public class OrderScreenController implements Initializable {
         alert.show();
     }
 
+    public int checkAvailableQuantity(String table, String id) throws SQLException {
+        String SQL = "SELECT \"availableQuantity\" FROM " + table + " WHERE id = " + "'" + id + "'";
+        ResultSet quantityRS = JDBC.execQuery(SQL);
+        quantityRS.next();
+
+        return quantityRS.getInt(1);
+    }
+
+    public void updateAvailableQuantity(String table, String id, int newQuantity){
+        String SQL = "UPDATE " + table + " SET \"availableQuantity\" = newQuantity WHERE id = '" + id + "'";
+        JDBC.execQuery(SQL);
+    }
 
     // Gathers data for beverages from database
     public ObservableList<Beverage> getBeverages() {
@@ -245,55 +259,6 @@ public class OrderScreenController implements Initializable {
         return recs;
     }
 
-    @FXML
-    public void actionShowRecBeverages(ActionEvent event) throws IOException {
-
-        TableColumn<Beverage, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<Beverage, Double> priceColumn = new TableColumn<>("Price");
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
-
-        menuTableView.getColumns().clear();
-        menuTableView.setItems(getRecBeverages());
-        menuTableView.getColumns().addAll(
-                nameColumn,
-                priceColumn);
-
-    }
-
-    @FXML
-    public void actionShowRecDesserts(ActionEvent event) throws IOException {
-        TableColumn<Dessert, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<Dessert, Double> priceColumn = new TableColumn<>("Price");
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
-
-        menuTableView.getColumns().clear();
-        menuTableView.setItems(getRecDesserts());
-        menuTableView.getColumns().addAll(
-                nameColumn,
-                priceColumn);
-
-    }
-
-    @FXML
-    public void actionShowRecEntrees(ActionEvent event) throws IOException {
-        TableColumn<Entree, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<Entree, Double> priceColumn = new TableColumn<>("Price");
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
-
-        menuTableView.getColumns().clear();
-        menuTableView.setItems(getRecEntrees());
-        menuTableView.getColumns().addAll(
-                nameColumn,
-                priceColumn);
-
-    }
-
     // Buttons
     @FXML
     public void actionWelcomeScreen(ActionEvent event) throws IOException {
@@ -370,20 +335,56 @@ public class OrderScreenController implements Initializable {
         topChoicesButton.setVisible(false);
     }
 
+    @FXML
+    public void actionShowRecBeverages(ActionEvent event) throws IOException {
 
-    public int checkAvailableQuantity(String table, String id) throws SQLException {
-        String SQL = "SELECT \"availableQuantity\" FROM " + table + " WHERE id = " + "'" + id + "'";
-        ResultSet quantityRS = JDBC.execQuery(SQL);
-        quantityRS.next();
+        TableColumn<Beverage, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        return quantityRS.getInt(1);
+        TableColumn<Beverage, Double> priceColumn = new TableColumn<>("Price");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        menuTableView.getColumns().clear();
+        menuTableView.setItems(getRecBeverages());
+        menuTableView.getColumns().addAll(
+                nameColumn,
+                priceColumn);
+
     }
 
-    public void updateAvailableQuantity(String table, String id, int newQuantity){
-        String SQL = "UPDATE " + table + " SET \"availableQuantity\" = newQuantity WHERE id = '" + id + "'";
-        JDBC.execQuery(SQL);
+    @FXML
+    public void actionShowRecDesserts(ActionEvent event) throws IOException {
+        TableColumn<Dessert, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Dessert, Double> priceColumn = new TableColumn<>("Price");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        menuTableView.getColumns().clear();
+        menuTableView.setItems(getRecDesserts());
+        menuTableView.getColumns().addAll(
+                nameColumn,
+                priceColumn);
+
     }
 
+    @FXML
+    public void actionShowRecEntrees(ActionEvent event) throws IOException {
+        TableColumn<Entree, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Entree, Double> priceColumn = new TableColumn<>("Price");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        menuTableView.getColumns().clear();
+        menuTableView.setItems(getRecEntrees());
+        menuTableView.getColumns().addAll(
+                nameColumn,
+                priceColumn);
+
+    }
+
+    @FXML
     public void actionTopChoices(ActionEvent event) {
         var object = menuTableView.getItems().get(1).getClass().getName();
         try {
@@ -406,7 +407,7 @@ public class OrderScreenController implements Initializable {
     @FXML
     public void actionSelectItem(ActionEvent event) throws IOException, SQLException {
         var object = menuTableView.getSelectionModel().getSelectedItem();
-        int quantity;
+
 
         Window menuTableOwner =  menuTableView.getScene().getWindow();
         Window orderTableOwner =  orderTableView.getScene().getWindow();
@@ -416,7 +417,7 @@ public class OrderScreenController implements Initializable {
             return;
         }
 
-
+        int quantity;
 
         double totalAfterTax = 0;
 
@@ -431,17 +432,7 @@ public class OrderScreenController implements Initializable {
                     break;
                 }
                 else {
-
                     orderTableView.getItems().add(selectedBeverage);
-
-                    orderTotal += selectedBeverage.getSalePrice();
-                    totalAfterTax = orderTotal * TAXPERCENT;
-
-                    orderTextArea.setText(
-                            "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                    + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                    );
-
                 }
 
                 break;
@@ -487,26 +478,31 @@ public class OrderScreenController implements Initializable {
 
                     window.showAndWait();
 
-                    // Things to do after launch
-                    Vector<Topping> toppings = controller.getSelectedToppings();
+                    // Things to do after launch: get new set of toppings
+                    Vector<Topping> finalToppings = controller.getSelectedToppings();
 
-                    for (Topping topping : toppings) {
-                        System.out.println(topping.getName());
+                    Entree alteredEntree = new Entree(selectedEntree.getId(),
+                                                      selectedEntree.getName(),
+                                                      selectedEntree.getType(),
+                                                      selectedEntree.getAvailableQuantity(),
+                                                      selectedEntree.getCostToMake(),
+                                                      selectedEntree.getSalePrice(),
+                                                      selectedEntree.getToppings());
+
+                    Array toppingsForDB = JDBC.conn.createArrayOf("text", finalToppings.toArray());
+                    alteredEntree.setToppings(toppingsForDB);
+
+                    double additionalCost = 0;
+                    if (finalToppings.size() - defaultToppings.size() > 0) {
+                        for (int i = defaultToppings.size(); i < finalToppings.size(); i++) {
+                            additionalCost += finalToppings.get(i).getSalePrice() ;
+                        }
                     }
+                    alteredEntree.setSalePrice((int) ((alteredEntree.getSalePrice() + additionalCost) * 100) / 100.0);
 
                     // Put the new array of toppings here
-                    Array toppingsForDB = JDBC.conn.createArrayOf("text", stringToppings);
-                    selectedEntree.setToppings(toppingsForDB);
-                    orderTableView.getItems().add(selectedEntree);
-
-
-                    orderTotal += selectedEntree.getSalePrice();
-                    totalAfterTax = orderTotal * TAXPERCENT;
-
-                    orderTextArea.setText(
-                            "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                    + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                    );
+//                    Array toppingsForDB = JDBC.conn.createArrayOf("text", stringToppings);
+                    orderTableView.getItems().add(alteredEntree);
 
                 }
 
@@ -523,21 +519,12 @@ public class OrderScreenController implements Initializable {
                 }
 
                 orderTableView.getItems().add(selectedSide);
-
-                orderTotal += selectedSide.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
-
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
-
                 break;
 
             case "WhataPOS.Dessert":
                 Dessert selectedDessert = (Dessert) object;
 
-                quantity = checkAvailableQuantity("sides", selectedDessert.getId());
+                quantity = checkAvailableQuantity("desserts", selectedDessert.getId());
 
                 if (quantity <= 0) {
                     showAlert(Alert.AlertType.ERROR, orderTableOwner, "Selected item is out of stock", "Error");
@@ -545,34 +532,6 @@ public class OrderScreenController implements Initializable {
                 }
 
                 orderTableView.getItems().add(selectedDessert);
-
-                orderTotal += selectedDessert.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
-
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
-
-                break;
-
-            case "WhataPOS.Topping":
-                Topping selectedTopping = (Topping) object;
-
-                quantity = checkAvailableQuantity("toppings", selectedTopping.getId());
-
-                if (quantity <= 0) {
-                    showAlert(Alert.AlertType.ERROR, orderTableOwner, "Selected item is out of stock", "Error");
-                    break;
-                }
-
-                orderTotal += selectedTopping.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
-
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
 
                 break;
         }
@@ -588,70 +547,33 @@ public class OrderScreenController implements Initializable {
             return;
         }
 
-
         var object = orderTableView.getSelectionModel().getSelectedItem();
-
-        double totalAfterTax = 0;
 
         switch (object.getClass().getName()) {
             case "WhataPOS.Beverage":
                 Beverage selectedBeverage = (Beverage) object;
-
                 orderTableView.getItems().remove(selectedBeverage);
-                orderTotal -= selectedBeverage.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
-
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
                 break;
 
             case "WhataPOS.Entree":
                 Entree selectedEntree = (Entree) object;
-
                 orderTableView.getItems().remove(selectedEntree);
-                orderTotal -= selectedEntree.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
-
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
-
-
                 break;
 
             case "WhataPOS.Side":
                 Side selectedSide = (Side) object;
-
                 orderTableView.getItems().remove(selectedSide);
-                orderTotal -= selectedSide.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
-
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
-
-
                 break;
 
             case "WhataPOS.Dessert":
                 Dessert selectedDessert = (Dessert) object;
-
                 orderTableView.getItems().remove(selectedDessert);
-                orderTotal -= selectedDessert.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
-
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
                 break;
         }
     }
 
+
+    @FXML
     public void actionPayItem(ActionEvent event) throws IOException, SQLException {
         Window orderTableOwner =  orderTableView.getScene().getWindow();
 
@@ -660,81 +582,123 @@ public class OrderScreenController implements Initializable {
             return;
         }
 
-        ObservableList totalOrder = orderTableView.getItems();
+        // Finalize step
+        if (payButton.getText().equals("Ready to Pay")) {
+            deleteButton.setVisible(false);
+            editToppingButton.setVisible(false);
+
+            double orderTotal = 0;
+
+            for (var item : orderTableView.getItems()) {
+                switch (item.getClass().getName()) {
+                    case "WhataPOS.Entree":
+                        Entree entree = (Entree) item;
+                        orderTotal += entree.getSalePrice();
+                        System.out.println(orderTotal);
+                        break;
+
+                    case "WhataPOS.Beverage":
+                        Beverage beverage = (Beverage) item;
+                        orderTotal += beverage.getSalePrice();
+                        break;
+
+                    case "WhataPOS.Dessert":
+                        Dessert dessert = (Dessert) item;
+                        orderTotal += dessert.getSalePrice();
+                        break;
 
 
-        Array orderIDsSQL;
-        String[] orderIDsJAVA = new String[totalOrder.size()];
-        Vector items = new Vector();
+                    case "WhataPOS.Side":
+                        Side side = (Side) item;
+                        orderTotal += side.getSalePrice();
+                        break;
+                }
+            }
 
-        for (int i = 0; i < totalOrder.size(); i++) {
+            orderTextArea.setText(
+                    "Order Total: " + String.format("%.2f", orderTotal) + "\n"
+                            + "Total After Tax: " + String.format("%.2f", orderTotal * TAXPERCENT)
+            );
 
-            var orderElement = totalOrder.get(i);
+            payButton.setText("Pay");
 
-            switch (totalOrder.get(i).getClass().getName()) {
+        } else if (payButton.getText().equals("Pay")) {
+            ObservableList totalOrder = orderTableView.getItems();
 
-                case "WhataPOS.Beverage":
-                    Beverage beverage = (Beverage) orderElement;
-                    orderIDsJAVA[i] = beverage.getId();
-                    items.add(beverage);
-                    break;
 
-                case "WhataPOS.Entree":
-                    Entree entree = (Entree) orderElement;
-                    orderIDsJAVA[i] = entree.getId();
-                    items.add(entree);
+            Array orderIDsSQL;
+            String[] orderIDsJAVA = new String[totalOrder.size()];
+            Vector items = new Vector();
+
+            for (int i = 0; i < totalOrder.size(); i++) {
+
+                var orderElement = totalOrder.get(i);
+
+                switch (totalOrder.get(i).getClass().getName()) {
+
+                    case "WhataPOS.Beverage":
+                        Beverage beverage = (Beverage) orderElement;
+                        orderIDsJAVA[i] = beverage.getId();
+                        items.add(beverage);
+                        break;
+
+                    case "WhataPOS.Entree":
+                        Entree entree = (Entree) orderElement;
+                        orderIDsJAVA[i] = entree.getId();
+                        items.add(entree);
 //                    System.out.println(entree.getName());
 //                    var toppingsArray = entree.getToppings().getArray();
 //                    String[] stringToppings = (String[]) toppingsArray;
 //                    for(String s : stringToppings)
 //                        System.out.println(s);
-                    break;
+                        break;
 
-                case "WhataPOS.Side":
-                    Side side = (Side) orderElement;
-                    orderIDsJAVA[i] = side.getId();
-                    items.add(side);
-                    break;
+                    case "WhataPOS.Side":
+                        Side side = (Side) orderElement;
+                        orderIDsJAVA[i] = side.getId();
+                        items.add(side);
+                        break;
 
-                case "WhataPOS.Dessert":
-                    Dessert dessert = (Dessert) orderElement;
-                    orderIDsJAVA[i] = dessert.getId();
-                    items.add(dessert);
-                    break;
+                    case "WhataPOS.Dessert":
+                        Dessert dessert = (Dessert) orderElement;
+                        orderIDsJAVA[i] = dessert.getId();
+                        items.add(dessert);
+                        break;
+
+                }
 
             }
 
+            ResultSet maxidRS = JDBC.execQuery("SELECT MAX(\"id\") as maxid from order_data");
+            maxidRS.next();
+            int maxid = maxidRS.getInt("maxid") + 1;
+            String date = LocalDate.now().toString();
+
+            // TODO process items vector
+            String dummyJson = "{\"E5_0\": [\"T1\", \"T3\", \"T7\", \"T8\", \"T9\"], \"E1_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"E7_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"S4_0\": [], \"S1_0\": [], \"S3_0\": [], \"B4_0\": [], \"B5_0\": [], \"B2_0\": [], \"D1_0\": [], \"D1_1\": []}";
+            //PGObject jsonObj = new PGObject();
+
+            orderIDsSQL = JDBC.conn.createArrayOf("text", orderIDsJAVA);
+
+            String[] temp = (String[]) orderIDsSQL.getArray();
+
+            final String SQL_INSERT = "INSERT INTO neworderdata (\"id\", \"customer_id\", \"date\", \"order\") VALUES (?,?,?,cast(? as json))";
+
+            PreparedStatement preparedStatement = JDBC.conn.prepareStatement(SQL_INSERT);
+
+            System.out.println(Order.fname + " " + Order.lname);
+
+            preparedStatement.setInt(1, maxid);
+            preparedStatement.setString(2, Order.customer_id);
+            preparedStatement.setString(3, date);
+            preparedStatement.setString(4, dummyJson);
+
+            preparedStatement.executeUpdate();
+            orderTextArea.setText(
+                    "Order Placed! Your Order's ID is " + maxid + "."
+            );
+            orderTableView.getItems().clear();
         }
-
-        ResultSet maxidRS = JDBC.execQuery("SELECT MAX(\"id\") as maxid from order_data");
-        maxidRS.next();
-        int maxid = maxidRS.getInt("maxid") + 1;
-        String date = LocalDate.now().toString();
-
-        // TODO process items vector
-        String dummyJson = "{\"E5_0\": [\"T1\", \"T3\", \"T7\", \"T8\", \"T9\"], \"E1_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"E7_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"S4_0\": [], \"S1_0\": [], \"S3_0\": [], \"B4_0\": [], \"B5_0\": [], \"B2_0\": [], \"D1_0\": [], \"D1_1\": []}";
-        //PGObject jsonObj = new PGObject();
-
-        orderIDsSQL = JDBC.conn.createArrayOf("text", orderIDsJAVA);
-
-        String[] temp = (String[]) orderIDsSQL.getArray();
-
-        final String SQL_INSERT = "INSERT INTO neworderdata (\"id\", \"customer_id\", \"date\", \"order\") VALUES (?,?,?,cast(? as json))";
-
-        PreparedStatement preparedStatement = JDBC.conn.prepareStatement(SQL_INSERT);
-
-        System.out.println(Order.fname + " " + Order.lname);
-
-        preparedStatement.setInt(1, maxid);
-        preparedStatement.setString(2, Order.customer_id);
-        preparedStatement.setString(3, date);
-        preparedStatement.setString(4, dummyJson);
-
-        preparedStatement.executeUpdate();
-        orderTextArea.setText(
-                "Order Placed! Your Order's ID is " + maxid + "."
-        );
-        orderTableView.getItems().clear();
     }
 
 
@@ -755,6 +719,7 @@ public class OrderScreenController implements Initializable {
         orderTableView.getColumns().addAll(nameColumn, priceColumn);
 
         topChoicesButton.setVisible(false);
+        editToppingButton.setVisible(false);
     }
 
 }
