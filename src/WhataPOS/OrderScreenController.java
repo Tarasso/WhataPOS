@@ -12,22 +12,25 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.time.*;
 
-import javax.swing.*;
 import java.net.URL;
 import java.sql.*;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.ResourceBundle;
+import java.util.Vector;
 
 import WhataPOS.JDBC;
 import javafx.stage.Window;
+
+import javax.swing.plaf.basic.BasicDesktopIconUI;
 
 public class OrderScreenController implements Initializable {
 
@@ -36,6 +39,7 @@ public class OrderScreenController implements Initializable {
     @FXML private TextArea orderTextArea;
     @FXML private TableView orderTableView;
     @FXML private Button topChoicesButton;
+    @FXML private Button editToppingButton;
 
 
     private float orderTotal = 0;
@@ -50,6 +54,7 @@ public class OrderScreenController implements Initializable {
         alert.initOwner(owner);
         alert.show();
     }
+
 
     // Gathers data for beverages from database
     public ObservableList<Beverage> getBeverages() {
@@ -73,7 +78,7 @@ public class OrderScreenController implements Initializable {
         return beverages;
     }
 
-    // Gathers data for Entrees for database
+    // Gathers data for entrees for database
     public ObservableList<Entree> getEntrees() {
         ObservableList<Entree> entrees = FXCollections.observableArrayList();
         try {
@@ -119,29 +124,6 @@ public class OrderScreenController implements Initializable {
         return desserts;
     }
 
-
-    // Gathers data for toppings from database
-    public ObservableList<Topping> getToppings() {
-        ObservableList<Topping> toppings = FXCollections.observableArrayList();
-        try {
-            String sql = "select * from toppings";
-            ResultSet rs = JDBC.execQuery(sql);
-            while (rs.next()) {
-                toppings.add(new Topping(
-                        rs.getString("id"),
-                        rs.getString("name"),
-                        rs.getInt("availableQuantity"),
-                        rs.getDouble("costToMake"),
-                        rs.getDouble("salePrice")
-                ));
-            }
-        } catch(SQLException se) {
-            // Handle errors for JDBC
-            se.printStackTrace();
-        }
-        return toppings;
-    }
-
     // Gathers data for sides from database
     public ObservableList<Side> getSides() {
         ObservableList<Side> sides = FXCollections.observableArrayList();
@@ -164,6 +146,154 @@ public class OrderScreenController implements Initializable {
         return sides;
     }
 
+
+    // Get recommended entrees
+    public ObservableList<Entree> getRecEntrees() {
+        ObservableList<Entree> recs = FXCollections.observableArrayList();
+        try {
+            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'E%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            ResultSet rs = JDBC.execQuery(sql);
+
+            String[] id = new String[3];
+            int i = 0;
+            while (rs.next()) {
+                id[i++] = rs.getString("unnest");
+            }
+
+            for (i = 0; i < id.length; ++i) {
+                rs = JDBC.execQuery("select * from \"entrees\" where \"id\" = '" + id[i] + "'");
+                while (rs.next()) {
+                    recs.add(new Entree(
+                            rs.getString("id"),
+                            rs.getString("name"),
+                            rs.getString("type"),
+                            rs.getInt("availableQuantity"),
+                            rs.getDouble("costToMake"),
+                            rs.getDouble("salePrice"),
+                            rs.getArray("toppings")
+                    ));
+                }
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return recs;
+    }
+
+    // Get recommended beverages
+    public ObservableList<Beverage> getRecBeverages() {
+        ObservableList<Beverage> recs = FXCollections.observableArrayList();
+        try {
+            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'B%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            ResultSet rs = JDBC.execQuery(sql);
+
+            String[] id = new String[3];
+            int i = 0;
+            while (rs.next()) {
+                id[i++] = rs.getString("unnest");
+            }
+
+            for (i = 0; i < id.length; ++i) {
+                rs = JDBC.execQuery("select * from \"beverages\" where \"id\" = '" + id[i] + "'");
+                while (rs.next()) {
+                    recs.add(new Beverage(
+                            rs.getString("id"),
+                            rs.getString("name"),
+                            rs.getInt("availableQuantity"),
+                            rs.getDouble("costToMake"),
+                            rs.getDouble("salePrice")
+                    ));
+                }
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return recs;
+    }
+
+    // Get recommended desserts
+    public ObservableList<Dessert> getRecDesserts() {
+        ObservableList<Dessert> recs = FXCollections.observableArrayList();
+        try {
+            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'D%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            ResultSet rs = JDBC.execQuery(sql);
+
+            String[] id = new String[3];
+            int i = 0;
+            while (rs.next()) {
+                id[i++] = rs.getString("unnest");
+            }
+
+            for (i = 0; i < id.length; ++i) {
+                rs = JDBC.execQuery("select * from \"desserts\" where \"id\" = '" + id[i] + "'");
+                while (rs.next()) {
+                    recs.add(new Dessert(
+                            rs.getString("id"),
+                            rs.getString("name"),
+                            rs.getInt("availableQuantity"),
+                            rs.getDouble("costToMake"),
+                            rs.getDouble("salePrice")
+                    ));
+                }
+            }
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+        return recs;
+    }
+
+    @FXML
+    public void actionShowRecBeverages(ActionEvent event) throws IOException {
+
+        TableColumn<Beverage, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Beverage, Double> priceColumn = new TableColumn<>("Price");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        menuTableView.getColumns().clear();
+        menuTableView.setItems(getRecBeverages());
+        menuTableView.getColumns().addAll(
+                nameColumn,
+                priceColumn);
+
+    }
+
+    @FXML
+    public void actionShowRecDesserts(ActionEvent event) throws IOException {
+        TableColumn<Dessert, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Dessert, Double> priceColumn = new TableColumn<>("Price");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        menuTableView.getColumns().clear();
+        menuTableView.setItems(getRecDesserts());
+        menuTableView.getColumns().addAll(
+                nameColumn,
+                priceColumn);
+
+    }
+
+    @FXML
+    public void actionShowRecEntrees(ActionEvent event) throws IOException {
+        TableColumn<Entree, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Entree, Double> priceColumn = new TableColumn<>("Price");
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+
+        menuTableView.getColumns().clear();
+        menuTableView.setItems(getRecEntrees());
+        menuTableView.getColumns().addAll(
+                nameColumn,
+                priceColumn);
+
+    }
+
     // Buttons
     @FXML
     public void actionWelcomeScreen(ActionEvent event) throws IOException {
@@ -184,11 +314,9 @@ public class OrderScreenController implements Initializable {
     public void actionShowEntrees(ActionEvent event) throws IOException {
 
         TableColumn<Entree, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         TableColumn<Entree, Double> priceColumn = new TableColumn<>("Price");
-        priceColumn.setMinWidth(20);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         menuTableView.getColumns().clear();
@@ -201,11 +329,9 @@ public class OrderScreenController implements Initializable {
     @FXML
     public void actionShowBeverages(ActionEvent event) throws IOException {
         TableColumn<Beverage, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         TableColumn<Beverage, Double> priceColumn = new TableColumn<>("Price");
-        priceColumn.setMinWidth(20);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         menuTableView.getColumns().clear();
@@ -218,11 +344,9 @@ public class OrderScreenController implements Initializable {
     public void actionShowDesserts(ActionEvent event) throws IOException {
 
         TableColumn<Dessert, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         TableColumn<Dessert, Double> priceColumn = new TableColumn<>("Price");
-        priceColumn.setMinWidth(20);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         menuTableView.getColumns().clear();
@@ -235,11 +359,9 @@ public class OrderScreenController implements Initializable {
     public void actionShowSides(ActionEvent event) throws IOException {
 
         TableColumn<Side, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setMinWidth(200);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         TableColumn<Side, Double> priceColumn = new TableColumn<>("Price");
-        priceColumn.setMinWidth(20);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         menuTableView.getColumns().clear();
@@ -247,6 +369,7 @@ public class OrderScreenController implements Initializable {
         menuTableView.getColumns().addAll(nameColumn, priceColumn);
         topChoicesButton.setVisible(false);
     }
+
 
     public int checkAvailableQuantity(String table, String id) throws SQLException {
         String SQL = "SELECT \"availableQuantity\" FROM " + table + " WHERE id = " + "'" + id + "'";
@@ -261,24 +384,39 @@ public class OrderScreenController implements Initializable {
         JDBC.execQuery(SQL);
     }
 
+    public void actionTopChoices(ActionEvent event) {
+        var object = menuTableView.getItems().get(1).getClass().getName();
+        try {
+            switch (object) {
+                case "WhataPOS.Entree":
+                    actionShowRecEntrees(event);
+                    break;
+                case "WhataPOS.Beverage":
+                    actionShowRecBeverages(event);
+                    break;
+                case "WhataPOS.Dessert":
+                    actionShowRecDesserts(event);
+                    break;
+            }
+        } catch(IOException ex) {
+            System.out.println(ex.toString());
+        }
+    }
+
     @FXML
     public void actionSelectItem(ActionEvent event) throws IOException, SQLException {
         var object = menuTableView.getSelectionModel().getSelectedItem();
         int quantity;
 
         Window menuTableOwner =  menuTableView.getScene().getWindow();
+        Window orderTableOwner =  orderTableView.getScene().getWindow();
 
         if (Bindings.isEmpty(menuTableView.getSelectionModel().getSelectedItems()).get()) {
             showAlert(Alert.AlertType.ERROR, menuTableOwner, "No item is selected", "Error");
             return;
         }
 
-        Window orderTableOwner =  orderTableView.getScene().getWindow();
 
-        if (Bindings.isEmpty(menuTableView.getSelectionModel().getSelectedItems()).get()) {
-            showAlert(Alert.AlertType.ERROR, orderTableOwner, "No item is selected", "Error");
-            return;
-        }
 
         double totalAfterTax = 0;
 
@@ -318,7 +456,34 @@ public class OrderScreenController implements Initializable {
                     break;
                 }
                 else {
+                    // Switch to selecting toppings
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("SelectToppingScene.fxml")); // Loader targets the pop up window
+                    Parent selectToppingParent = (Parent) loader.load();
+                    Scene selectToppingScene = new Scene(selectToppingParent);
+                    SelectToppingSceneController controller = loader.getController();
+
+                    Stage window = new Stage(); // Set up the pop up screen
+                    window.initModality(Modality.APPLICATION_MODAL);
+                    window.setScene(selectToppingScene);
+
+                    // Things to do before launch
+                    controller.setInitToppings(new Vector<Topping>(Arrays.asList(
+                            new Topping("1", "Test 1", 12, 10.0, 10.0),
+                            new Topping("2", "Test 1", 12, 10.0, 10.0))));
+
+                    window.showAndWait();
+
+                    // Things to do after launch
+                    Vector<Topping> toppings = controller.getSelectedToppings();
+
+                    for (Topping topping : toppings) {
+                        System.out.println(topping.getName());
+                    }
+
+                    // Put the new array of toppings here
+//                    selectedEntree.setToppings(toppings.toArray());
                     orderTableView.getItems().add(selectedEntree);
+
 
                     orderTotal += selectedEntree.getSalePrice();
                     totalAfterTax = orderTotal * TAXPERCENT;
@@ -367,6 +532,26 @@ public class OrderScreenController implements Initializable {
                 orderTableView.getItems().add(selectedDessert);
 
                 orderTotal += selectedDessert.getSalePrice();
+                totalAfterTax = orderTotal * TAXPERCENT;
+
+                orderTextArea.setText(
+                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
+                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
+                );
+
+                break;
+
+            case "WhataPOS.Topping":
+                Topping selectedTopping = (Topping) object;
+
+                quantity = checkAvailableQuantity("toppings", selectedTopping.getId());
+
+                if (quantity <= 0) {
+                    showAlert(Alert.AlertType.ERROR, orderTableOwner, "Selected item is out of stock", "Error");
+                    break;
+                }
+
+                orderTotal += selectedTopping.getSalePrice();
                 totalAfterTax = orderTotal * TAXPERCENT;
 
                 orderTextArea.setText(
@@ -523,174 +708,11 @@ public class OrderScreenController implements Initializable {
         orderTableView.getItems().clear();
     }
 
-    public ObservableList<Entree> getRecEntrees() {
-        ObservableList<Entree> recs = FXCollections.observableArrayList();
-        try {
-            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'E%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
-            ResultSet rs = JDBC.execQuery(sql);
 
-            String[] id = new String[3];
-            int i = 0;
-            while (rs.next()) {
-                id[i++] = rs.getString("unnest");
-            }
 
-            for (i = 0; i < id.length; ++i) {
-                rs = JDBC.execQuery("select * from \"entrees\" where \"id\" = '" + id[i] + "'");
-                while (rs.next()) {
-                    recs.add(new Entree(
-                            rs.getString("id"),
-                            rs.getString("name"),
-                            rs.getString("type"),
-                            rs.getInt("availableQuantity"),
-                            rs.getDouble("costToMake"),
-                            rs.getDouble("salePrice"),
-                            rs.getArray("toppings")
-                    ));
-                }
-            }
-        } catch(SQLException se) {
-            // Handle errors for JDBC
-            se.printStackTrace();
-        }
-        return recs;
-    }
-
-    public ObservableList<Beverage> getRecBeverages() {
-        ObservableList<Beverage> recs = FXCollections.observableArrayList();
-        try {
-            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'B%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
-            ResultSet rs = JDBC.execQuery(sql);
-
-            String[] id = new String[3];
-            int i = 0;
-            while (rs.next()) {
-                id[i++] = rs.getString("unnest");
-            }
-
-            for (i = 0; i < id.length; ++i) {
-                rs = JDBC.execQuery("select * from \"beverages\" where \"id\" = '" + id[i] + "'");
-                while (rs.next()) {
-                    recs.add(new Beverage(
-                                rs.getString("id"),
-                                rs.getString("name"),
-                                rs.getInt("availableQuantity"),
-                                rs.getDouble("costToMake"),
-                                rs.getDouble("salePrice")
-                    ));
-                }
-            }
-        } catch(SQLException se) {
-            // Handle errors for JDBC
-            se.printStackTrace();
-        }
-        return recs;
-    }
-
-    public ObservableList<Dessert> getRecDesserts() {
-        ObservableList<Dessert> recs = FXCollections.observableArrayList();
-        try {
-            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'D%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
-            ResultSet rs = JDBC.execQuery(sql);
-
-            String[] id = new String[3];
-            int i = 0;
-            while (rs.next()) {
-                id[i++] = rs.getString("unnest");
-            }
-
-            for (i = 0; i < id.length; ++i) {
-                rs = JDBC.execQuery("select * from \"desserts\" where \"id\" = '" + id[i] + "'");
-                while (rs.next()) {
-                    recs.add(new Dessert(
-                            rs.getString("id"),
-                            rs.getString("name"),
-                            rs.getInt("availableQuantity"),
-                            rs.getDouble("costToMake"),
-                            rs.getDouble("salePrice")
-                    ));
-                }
-            }
-        } catch(SQLException se) {
-            // Handle errors for JDBC
-            se.printStackTrace();
-        }
-        return recs;
-    }
-
-    @FXML
-    public void actionShowRecBeverages(ActionEvent event) throws IOException {
-
-        TableColumn<Beverage, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<Beverage, Double> priceColumn = new TableColumn<>("salePrice");
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
-
-        menuTableView.getColumns().clear();
-        menuTableView.setItems(getRecBeverages());
-        menuTableView.getColumns().addAll(
-                nameColumn,
-                priceColumn);
-
-    }
-
-    @FXML
-    public void actionShowRecDesserts(ActionEvent event) throws IOException {
-        TableColumn<Dessert, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<Dessert, Double> priceColumn = new TableColumn<>("salePrice");
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
-
-        menuTableView.getColumns().clear();
-        menuTableView.setItems(getRecDesserts());
-        menuTableView.getColumns().addAll(
-                nameColumn,
-                priceColumn);
-
-    }
-
-    @FXML
-    public void actionShowRecEntrees(ActionEvent event) throws IOException {
-        TableColumn<Entree, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<Entree, Double> priceColumn = new TableColumn<>("salePrice");
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
-
-        menuTableView.getColumns().clear();
-        menuTableView.setItems(getRecEntrees());
-        menuTableView.getColumns().addAll(
-                nameColumn,
-                priceColumn);
-
-    }
-
-    public void actionTopChoices(ActionEvent event) {
-        var object = menuTableView.getItems().get(1);
-        try {
-            switch (object.getClass().getName()) {
-                case "WhataPOS.Entree":
-                    getRecEntrees();
-                    actionShowRecEntrees(event);
-                    break;
-                case "WhataPOS.Beverage":
-                    getRecBeverages();
-                    actionShowRecBeverages(event);
-                    break;
-                case "WhataPOS.Dessert":
-                    getRecDesserts();
-                    actionShowRecDesserts(event);
-                    break;
-            }
-        } catch(IOException ex) {
-            System.out.println(ex.toString());
-        }
-    }
 
     @Override
-    public void initialize (URL url, ResourceBundle resourceBundle) {
+    public void initialize (URL url, ResourceBundle resourcebundle) {
         orderTextArea.setEditable(false);
 
         TableColumn<Side, String> nameColumn = new TableColumn<>("Name");
