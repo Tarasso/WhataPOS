@@ -626,15 +626,13 @@ public class OrderScreenController implements Initializable {
             }
         }
 
-
-
         return gsonObj.toJson(id_to_toppings);
     }
 
 
     @FXML
     public void actionPayItem(ActionEvent event) throws IOException, SQLException {
-        Window orderTableOwner =  orderTableView.getScene().getWindow();
+        Window orderTableOwner = orderTableView.getScene().getWindow();
 
         if (Bindings.isEmpty(orderTableView.getItems()).get()) {
             showAlert(Alert.AlertType.ERROR, orderTableOwner, "Order is Empty", "Error");
@@ -730,41 +728,42 @@ public class OrderScreenController implements Initializable {
 
 
 //        System.out.println("max current id: " + maxid);
-        ZoneId z = ZoneId.of("America/Chicago");
-        LocalDate date = LocalDate.now(z);
+            ZoneId z = ZoneId.of("America/Chicago");
+            LocalDate date = LocalDate.now(z);
 
-        // TODO process items vector
-        String jsonToInsert = convert(items);
+            // TODO process items vector
+            String jsonToInsert = convert(items);
 
-        //String dummyJson = "{\"E5_0\": [\"T1\", \"T3\", \"T7\", \"T8\", \"T9\"], \"E1_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"E7_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"S4_0\": [], \"S1_0\": [], \"S3_0\": [], \"B4_0\": [], \"B5_0\": [], \"B2_0\": [], \"D1_0\": [], \"D1_1\": []}";
-        //PGObject jsonObj = new PGObject();
+            //String dummyJson = "{\"E5_0\": [\"T1\", \"T3\", \"T7\", \"T8\", \"T9\"], \"E1_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"E7_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"S4_0\": [], \"S1_0\": [], \"S3_0\": [], \"B4_0\": [], \"B5_0\": [], \"B2_0\": [], \"D1_0\": [], \"D1_1\": []}";
+            //PGObject jsonObj = new PGObject();
 
             orderIDsSQL = JDBC.conn.createArrayOf("text", orderIDsJAVA);
 
             String[] temp = (String[]) orderIDsSQL.getArray();
 
 //        final String SQL_INSERT = "INSERT INTO order_data (\"id\", \"customer_id\", \"date\", \"order\") VALUES (?,?,?,cast(? as json))";
-        final String SQL_INSERT = "INSERT INTO order_data (\"customer_id\", \"date\", \"order\") VALUES (?,?,cast(? as json))";
+            final String SQL_INSERT = "INSERT INTO order_data (\"customer_id\", \"date\", \"order\") VALUES (?,?,cast(? as json))";
 
             PreparedStatement preparedStatement = JDBC.conn.prepareStatement(SQL_INSERT);
 
             System.out.println(Order.fname + " " + Order.lname);
 
 //        preparedStatement.setInt(1, maxid);
-        preparedStatement.setString(1, Order.customer_id);
-        preparedStatement.setObject(2, date);
-        preparedStatement.setString(3, jsonToInsert);
+            preparedStatement.setString(1, Order.customer_id);
+            preparedStatement.setObject(2, date);
+            preparedStatement.setString(3, jsonToInsert);
 
-        preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
 
-        ResultSet maxidRS = JDBC.execQuery("SELECT MAX(\"id\") as maxid from order_data");
-        maxidRS.next();
-        int maxid = maxidRS.getInt("maxid");
+            ResultSet maxidRS = JDBC.execQuery("SELECT MAX(\"id\") as maxid from order_data");
+            maxidRS.next();
+            int maxid = maxidRS.getInt("maxid");
 
-        orderTextArea.setText(
-                "Order Placed! Your Order's ID is " + maxid + "."
-        );
-        orderTableView.getItems().clear();
+            orderTextArea.setText(
+                    "Order Placed! Your Order's ID is " + maxid + "."
+            );
+            orderTableView.getItems().clear();
+        }
     }
 
 
