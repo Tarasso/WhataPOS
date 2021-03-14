@@ -37,6 +37,7 @@ public class OrderScreenController implements Initializable {
     @FXML private TableView orderTableView;
     @FXML private Button topChoicesButton;
 
+
     private float orderTotal = 0;
     private final double TAXPERCENT = 1.0825;
 
@@ -169,6 +170,11 @@ public class OrderScreenController implements Initializable {
         Parent welcomeScreenParent = FXMLLoader.load(getClass().getResource("WelcomeScreen.fxml"));
         Scene welcomeScreenScene = new Scene(welcomeScreenParent);
 
+        // Reset customer
+        Order.fname = "";
+        Order.lname = "";
+        Order.customer_id = "";
+
         Stage window = (Stage)((Node)event.getSource()).getScene().getWindow();
         window.setScene(welcomeScreenScene);
         window.show();
@@ -242,44 +248,100 @@ public class OrderScreenController implements Initializable {
         topChoicesButton.setVisible(false);
     }
 
+    public int checkAvailableQuantity(String table, String id) throws SQLException {
+        String SQL = "SELECT \"availableQuantity\" FROM " + table + " WHERE id = " + "'" + id + "'";
+        ResultSet quantityRS = JDBC.execQuery(SQL);
+        quantityRS.next();
+
+        return quantityRS.getInt(1);
+    }
+
+    public void updateAvailableQuantity(String table, String id, int newQuantity){
+        String SQL = "UPDATE " + table + " SET \"availableQuantity\" = newQuantity WHERE id = '" + id + "'";
+        JDBC.execQuery(SQL);
+    }
+
     @FXML
-    public void actionSelectItem(ActionEvent event) throws IOException {
+    public void actionSelectItem(ActionEvent event) throws IOException, SQLException {
         var object = menuTableView.getSelectionModel().getSelectedItem();
+        int quantity;
+
+        Window menuTableOwner =  menuTableView.getScene().getWindow();
+
+        if (Bindings.isEmpty(menuTableView.getSelectionModel().getSelectedItems()).get()) {
+            showAlert(Alert.AlertType.ERROR, menuTableOwner, "No item is selected", "Error");
+            return;
+        }
+
+        Window orderTableOwner =  orderTableView.getScene().getWindow();
+
+        if (Bindings.isEmpty(menuTableView.getSelectionModel().getSelectedItems()).get()) {
+            showAlert(Alert.AlertType.ERROR, orderTableOwner, "No item is selected", "Error");
+            return;
+        }
 
         double totalAfterTax = 0;
 
         switch (object.getClass().getName()) {
             case "WhataPOS.Beverage":
                 Beverage selectedBeverage = (Beverage) object;
-                orderTableView.getItems().add(selectedBeverage);
 
-                orderTotal += selectedBeverage.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
+                quantity = checkAvailableQuantity("beverages", selectedBeverage.getId());
 
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
+                if (quantity <= 0) {
+                    showAlert(Alert.AlertType.ERROR, orderTableOwner, "Selected item is out of stock", "Error");
+                    break;
+                }
+                else {
+
+                    orderTableView.getItems().add(selectedBeverage);
+
+                    orderTotal += selectedBeverage.getSalePrice();
+                    totalAfterTax = orderTotal * TAXPERCENT;
+
+                    orderTextArea.setText(
+                            "Order Total: " + String.format("%.2f", orderTotal) + "\n"
+                                    + "Total After Tax: " + String.format("%.2f", totalAfterTax)
+                    );
+
+                }
 
                 break;
 
             case "WhataPOS.Entree":
                 Entree selectedEntree = (Entree) object;
 
-                orderTableView.getItems().add(selectedEntree);
+                quantity = checkAvailableQuantity("entrees", selectedEntree.getId());
 
-                orderTotal += selectedEntree.getSalePrice();
-                totalAfterTax = orderTotal * TAXPERCENT;
+                if (quantity <= 0) {
+                    showAlert(Alert.AlertType.ERROR, orderTableOwner, "Selected item is out of stock", "Error");
+                    break;
+                }
+                else {
+                    orderTableView.getItems().add(selectedEntree);
 
-                orderTextArea.setText(
-                        "Order Total: " + String.format("%.2f", orderTotal) + "\n"
-                                + "Total After Tax: " + String.format("%.2f", totalAfterTax)
-                );
+                    orderTotal += selectedEntree.getSalePrice();
+                    totalAfterTax = orderTotal * TAXPERCENT;
+
+                    orderTextArea.setText(
+                            "Order Total: " + String.format("%.2f", orderTotal) + "\n"
+                                    + "Total After Tax: " + String.format("%.2f", totalAfterTax)
+                    );
+
+                }
 
                 break;
 
             case "WhataPOS.Side":
                 Side selectedSide = (Side) object;
+
+                quantity = checkAvailableQuantity("sides", selectedSide.getId());
+
+                if (quantity <= 0) {
+                    showAlert(Alert.AlertType.ERROR, orderTableOwner, "Selected item is out of stock", "Error");
+                    break;
+                }
+
                 orderTableView.getItems().add(selectedSide);
 
                 orderTotal += selectedSide.getSalePrice();
@@ -294,6 +356,14 @@ public class OrderScreenController implements Initializable {
 
             case "WhataPOS.Dessert":
                 Dessert selectedDessert = (Dessert) object;
+
+                quantity = checkAvailableQuantity("sides", selectedDessert.getId());
+
+                if (quantity <= 0) {
+                    showAlert(Alert.AlertType.ERROR, orderTableOwner, "Selected item is out of stock", "Error");
+                    break;
+                }
+
                 orderTableView.getItems().add(selectedDessert);
 
                 orderTotal += selectedDessert.getSalePrice();
@@ -318,10 +388,6 @@ public class OrderScreenController implements Initializable {
             return;
         }
 
-        if (Bindings.isEmpty(orderTableView.getSelectionModel().getSelectedItems()).get()) {
-            showAlert(Alert.AlertType.ERROR, orderTableOwner, "No item is selected", "Error");
-            return;
-        }
 
         var object = orderTableView.getSelectionModel().getSelectedItem();
 
@@ -443,8 +509,10 @@ public class OrderScreenController implements Initializable {
 
         PreparedStatement preparedStatement = JDBC.conn.prepareStatement(SQL_INSERT);
 
+        System.out.println(Order.fname + " " + Order.lname);
+
         preparedStatement.setInt(1, maxid);
-        preparedStatement.setString(2, new String("U-1"));
+        preparedStatement.setString(2, Order.customer_id);
         preparedStatement.setString(3, date);
         preparedStatement.setArray(4, orderIDsSQL);
 
