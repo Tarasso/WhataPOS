@@ -1,5 +1,6 @@
 package WhataPOS;
 
+import com.google.gson.Gson;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,9 +24,7 @@ import java.sql.*;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.ResourceBundle;
-import java.util.Vector;
+import java.util.*;
 
 import WhataPOS.JDBC;
 import javafx.stage.Window;
@@ -466,8 +465,17 @@ public class OrderScreenController implements Initializable {
                     window.setScene(selectToppingScene);
 
                     // Things to do before launch: set default toppings
-                    var toppingsArray = selectedEntree.getToppings().getArray();
-                    String[] stringToppings = (String[]) toppingsArray;
+                    String sql1 = "select toppings from entrees where id = \'" + selectedEntree.getId() + "\'";
+                    ResultSet rs1 = JDBC.execQuery(sql1);
+                    rs1.next();
+                    var toppingsArray = rs1.getArray("toppings");
+//                    var toppingsArray = selectedEntree.getToppings().getArray();
+//                    String[] stringToppings = ((String[]) toppingsArray).clone();
+                    String[] stringToppings = ((String[]) toppingsArray.getArray());
+                    System.out.println("toppings (should be defaults):");
+                    for(String s : stringToppings)
+                        System.out.println(s);
+                    // String[] stringToppings = (String[]) toppingsArray;
                     Vector<Topping> defaultToppings = new Vector<>();
                     for(String topping : stringToppings)
                     {
@@ -490,12 +498,13 @@ public class OrderScreenController implements Initializable {
                     // Things to do after launch
                     Vector<Topping> toppings = controller.getSelectedToppings();
 
-                    for (Topping topping : toppings) {
-                        System.out.println(topping.getName());
-                    }
+//                    for (Topping topping : toppings) {
+//                        System.out.println(topping.getName());
+//                    }
 
                     // Put the new array of toppings here
-                    Array toppingsForDB = JDBC.conn.createArrayOf("text", stringToppings);
+                    // Array toppingsForDB = JDBC.conn.createArrayOf("text", stringToppings);
+                    Array toppingsForDB = JDBC.conn.createArrayOf("text", toppings.toArray());
                     selectedEntree.setToppings(toppingsForDB);
                     orderTableView.getItems().add(selectedEntree);
 
@@ -652,6 +661,56 @@ public class OrderScreenController implements Initializable {
         }
     }
 
+    public String convert(Vector items) throws SQLException {
+        Gson gsonObj = new Gson();
+
+        Map<String, Integer> id_occurences = new HashMap<>();
+        Map<String, String[]> id_to_toppings = new HashMap<>();
+
+        for(Object o : items)
+        {
+            if(o instanceof Entree)
+            {
+                Entree entree = (Entree) o;
+                if(id_occurences.containsKey(entree.getId()))
+                    id_occurences.put(entree.getId(), id_occurences.get(entree.getId()) + 1);
+                else
+                    id_occurences.put(entree.getId(), 0);
+
+                String newId = entree.getId() + "_" + id_occurences.get(entree.getId());
+                id_to_toppings.put(newId, (String[]) entree.getToppings().getArray());
+            }
+            else if(o instanceof Beverage)
+            {
+                Beverage beverage = (Beverage) o;
+                if(id_occurences.containsKey(beverage.getId()))
+                    id_occurences.put(beverage.getId(), id_occurences.get(beverage.getId()) + 1);
+                else
+                    id_occurences.put(beverage.getId(), 0);
+            }
+            else if(o instanceof Dessert)
+            {
+                Dessert dessert = (Dessert) o;
+                if(id_occurences.containsKey(dessert.getId()))
+                    id_occurences.put(dessert.getId(), id_occurences.get(dessert.getId()) + 1);
+                else
+                    id_occurences.put(dessert.getId(), 0);
+            }
+            else if(o instanceof Side)
+            {
+                Side side = (Side) o;
+                if(id_occurences.containsKey(side.getId()))
+                    id_occurences.put(side.getId(), id_occurences.get(side.getId()) + 1);
+                else
+                    id_occurences.put(side.getId(), 0);
+            }
+        }
+
+
+
+        return gsonObj.toJson(id_to_toppings);
+    }
+
     public void actionPayItem(ActionEvent event) throws IOException, SQLException {
         Window orderTableOwner =  orderTableView.getScene().getWindow();
 
@@ -683,11 +742,11 @@ public class OrderScreenController implements Initializable {
                     Entree entree = (Entree) orderElement;
                     orderIDsJAVA[i] = entree.getId();
                     items.add(entree);
-//                    System.out.println(entree.getName());
-//                    var toppingsArray = entree.getToppings().getArray();
-//                    String[] stringToppings = (String[]) toppingsArray;
-//                    for(String s : stringToppings)
-//                        System.out.println(s);
+                    System.out.println(entree.getName());
+                    var toppingsArray = entree.getToppings().getArray();
+                    String[] stringToppings = (String[]) toppingsArray;
+                    for(String s : stringToppings)
+                        System.out.println(s);
                     break;
 
                 case "WhataPOS.Side":
@@ -706,31 +765,39 @@ public class OrderScreenController implements Initializable {
 
         }
 
-        ResultSet maxidRS = JDBC.execQuery("SELECT MAX(\"id\") as maxid from order_data");
-        maxidRS.next();
-        int maxid = maxidRS.getInt("maxid") + 1;
-        String date = LocalDate.now().toString();
+
+//        System.out.println("max current id: " + maxid);
+        ZoneId z = ZoneId.of("America/Chicago");
+        LocalDate date = LocalDate.now(z);
 
         // TODO process items vector
-        String dummyJson = "{\"E5_0\": [\"T1\", \"T3\", \"T7\", \"T8\", \"T9\"], \"E1_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"E7_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"S4_0\": [], \"S1_0\": [], \"S3_0\": [], \"B4_0\": [], \"B5_0\": [], \"B2_0\": [], \"D1_0\": [], \"D1_1\": []}";
+        String jsonToInsert = convert(items);
+
+        //String dummyJson = "{\"E5_0\": [\"T1\", \"T3\", \"T7\", \"T8\", \"T9\"], \"E1_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"E7_0\": [\"T1\", \"T7\", \"T8\", \"T9\", \"T10\", \"T11\"], \"S4_0\": [], \"S1_0\": [], \"S3_0\": [], \"B4_0\": [], \"B5_0\": [], \"B2_0\": [], \"D1_0\": [], \"D1_1\": []}";
         //PGObject jsonObj = new PGObject();
 
         orderIDsSQL = JDBC.conn.createArrayOf("text", orderIDsJAVA);
 
         String[] temp = (String[]) orderIDsSQL.getArray();
 
-        final String SQL_INSERT = "INSERT INTO neworderdata (\"id\", \"customer_id\", \"date\", \"order\") VALUES (?,?,?,cast(? as json))";
+//        final String SQL_INSERT = "INSERT INTO order_data (\"id\", \"customer_id\", \"date\", \"order\") VALUES (?,?,?,cast(? as json))";
+        final String SQL_INSERT = "INSERT INTO order_data (\"customer_id\", \"date\", \"order\") VALUES (?,?,cast(? as json))";
 
         PreparedStatement preparedStatement = JDBC.conn.prepareStatement(SQL_INSERT);
 
         System.out.println(Order.fname + " " + Order.lname);
 
-        preparedStatement.setInt(1, maxid);
-        preparedStatement.setString(2, Order.customer_id);
-        preparedStatement.setString(3, date);
-        preparedStatement.setString(4, dummyJson);
+//        preparedStatement.setInt(1, maxid);
+        preparedStatement.setString(1, Order.customer_id);
+        preparedStatement.setObject(2, date);
+        preparedStatement.setString(3, jsonToInsert);
 
         preparedStatement.executeUpdate();
+
+        ResultSet maxidRS = JDBC.execQuery("SELECT MAX(\"id\") as maxid from order_data");
+        maxidRS.next();
+        int maxid = maxidRS.getInt("maxid");
+
         orderTextArea.setText(
                 "Order Placed! Your Order's ID is " + maxid + "."
         );
