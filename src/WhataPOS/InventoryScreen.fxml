@@ -97,11 +97,6 @@
                         <Insets bottom="8.0" top="8.0" />
                      </VBox.margin>
                   </DatePicker>
-                  <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" text="Get average">
-                     <VBox.margin>
-                        <Insets top="8.0" />
-                     </VBox.margin>
-                  </Button>
                </children>
             </VBox>
          </children>

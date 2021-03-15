@@ -86,11 +86,6 @@
                         <Insets bottom="8.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="editToppingButton" mnemonicParsing="false" prefHeight="20.0" prefWidth="79.0" text="Edit">
-                     <VBox.margin>
-                        <Insets top="8.0" />
-                     </VBox.margin>
-                  </Button>
                </children>
             </VBox>
          </children>
