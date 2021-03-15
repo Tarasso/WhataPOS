@@ -9,10 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
@@ -36,6 +33,18 @@ public class InventoryScreenController implements Initializable {
 
     @FXML private TableView inventoryTableView;
     @FXML private Button topChoicesButton;
+    @FXML private DatePicker beginDatePicker;
+    @FXML private DatePicker endDatePicker;
+    @FXML private boolean trendingUp;
+
+
+    public void actionTrendingUp() throws IOException {
+        trendingUp = true;
+    }
+
+    public void actionTrendingDown() throws IOException{
+        trendingUp = false;
+    }
 
     public ObservableList<Beverage> getBeverages() {
         ObservableList<Beverage> beverages = FXCollections.observableArrayList();
