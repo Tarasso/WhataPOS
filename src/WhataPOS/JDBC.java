@@ -57,6 +57,15 @@ public class JDBC {
         return null;
     }
 
+    public static void execUpdate(String sql_query) {
+        try {
+            stmt.executeUpdate(sql_query);
+        } catch(SQLException se) {
+            // Handle errors for JDBC
+            se.printStackTrace();
+        }
+    }
+
     public void closeConnection() {
         try {
             this.stmt.close();

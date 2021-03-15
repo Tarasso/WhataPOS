@@ -245,6 +245,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Beverage, Integer> quantityColumn = new TableColumn<>("availableQuantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        quantityColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Beverage, Integer> t) -> {
+                    Beverage selectedBeverage = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedBeverage.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE beverages SET \"availableQuantity\" = " + selectedBeverage.getAvailableQuantity() +  " WHERE id = '" + selectedBeverage.getId() + "'");
+                }
+        );
+        quantityColumn.setCellFactory(TextFieldTableCell.<Beverage, Integer>forTableColumn(new IntegerStringConverter()));
 
         TableColumn<Beverage, Double> costColumn = new TableColumn<>("costToMake");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
@@ -276,6 +284,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Dessert, Integer> quantityColumn = new TableColumn<>("availableQuantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        quantityColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Dessert, Integer> t) -> {
+                    Dessert selectedDessert = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedDessert.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE desserts SET \"availableQuantity\" = " + selectedDessert.getAvailableQuantity() +  " WHERE id = '" + selectedDessert.getId() + "'");
+                }
+        );
+        quantityColumn.setCellFactory(TextFieldTableCell.<Dessert, Integer>forTableColumn(new IntegerStringConverter()));
 
         TableColumn<Dessert, Double> costColumn = new TableColumn<>("costToMake");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
@@ -307,6 +323,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Side, Integer> quantityColumn = new TableColumn<>("availableQuantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        quantityColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Side, Integer> t) -> {
+                    Side selectedSide = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedSide.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE sides SET \"availableQuantity\" = " + selectedSide.getAvailableQuantity() +  " WHERE id = '" + selectedSide.getId() + "'");
+                }
+        );
+        quantityColumn.setCellFactory(TextFieldTableCell.<Side, Integer>forTableColumn(new IntegerStringConverter()));
 
         TableColumn<Side, Double> costColumn = new TableColumn<>("costToMake");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
@@ -344,8 +368,7 @@ public class InventoryScreenController implements Initializable {
                 (TableColumn.CellEditEvent<Entree, Integer> t) -> {
                     Entree selectedEntree = t.getTableView().getItems().get(t.getTablePosition().getRow());
                     selectedEntree.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
-                    System.out.println(selectedEntree.getAvailableQuantity());
-
+                    JDBC.execUpdate("UPDATE entrees SET \"availableQuantity\" = " + selectedEntree.getAvailableQuantity() +  " WHERE id = '" + selectedEntree.getId() + "'");
                 }
         );
         quantityColumn.setCellFactory(TextFieldTableCell.<Entree, Integer>forTableColumn(new IntegerStringConverter()));
@@ -355,6 +378,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Entree, Double> priceColumn = new TableColumn<>("salePrice");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+        priceColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Entree, Double> t) -> {
+                    Entree selectedEntree = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedEntree.setSalePrice(Double.parseDouble(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE entrees SET \"salePrice\" = " + selectedEntree.getSalePrice() +  " WHERE id = '" + selectedEntree.getId() + "'");
+                }
+        );
+        priceColumn.setCellFactory(TextFieldTableCell.<Entree, Double>forTableColumn(new DoubleStringConverter()));
 
         TableColumn<Entree, Array> toppingsColumn = new TableColumn<>("toppings");
         toppingsColumn.setCellValueFactory(new PropertyValueFactory<>("toppings"));
@@ -384,6 +415,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Topping, Integer> quantityColumn = new TableColumn<>("availableQuantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        quantityColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Topping, Integer> t) -> {
+                    Topping selectedTopping = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedTopping.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE toppings SET \"availableQuantity\" = " + selectedTopping.getAvailableQuantity() +  " WHERE id = '" + selectedTopping.getId() + "'");
+                }
+        );
+        quantityColumn.setCellFactory(TextFieldTableCell.<Topping, Integer>forTableColumn(new IntegerStringConverter()));
 
         TableColumn<Topping, Double> costColumn = new TableColumn<>("costToMake");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));

@@ -763,6 +763,36 @@ public class OrderScreenController implements Initializable {
             maxidRS.next();
             int maxid = maxidRS.getInt("maxid");
 
+            //decrement quantities
+            for(Object o : items)
+            {
+                if(o instanceof Entree)
+                {
+                    Entree entree = (Entree) o;
+                    JDBC.execUpdate("UPDATE entrees SET \"availableQuantity\" = " + (entree.getAvailableQuantity() - 1) +  " WHERE id = '" + entree.getId() + "'");
+//                    var temp = entree.getToppings().getArray();
+//                    String[] str = (String[]) temp;
+//                    for(String s : str)
+//                        System.out.println(s);
+                }
+                else if(o instanceof Beverage)
+                {
+                    Beverage beverage = (Beverage) o;
+                    JDBC.execUpdate("UPDATE beverages SET \"availableQuantity\" = " + (beverage.getAvailableQuantity() - 1) +  " WHERE id = '" + beverage.getId() + "'");
+                }
+                else if(o instanceof Dessert)
+                {
+                    Dessert dessert = (Dessert) o;
+                    JDBC.execUpdate("UPDATE desserts SET \"availableQuantity\" = " + (dessert.getAvailableQuantity() - 1) +  " WHERE id = '" + dessert.getId() + "'");
+
+                }
+                else if(o instanceof Side)
+                {
+                    Side side = (Side) o;
+                    JDBC.execUpdate("UPDATE sides SET \"availableQuantity\" = " + (side.getAvailableQuantity() - 1) +  " WHERE id = '" + side.getId() + "'");
+                }
+            }
+
             orderTextArea.setText(
                     "Order Placed! Your Order's ID is " + maxid + "."
             );
