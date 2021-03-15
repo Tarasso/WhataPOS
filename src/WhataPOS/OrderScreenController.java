@@ -460,13 +460,11 @@ public class OrderScreenController implements Initializable {
                     ResultSet rs1 = JDBC.execQuery(sql1);
                     rs1.next();
                     var toppingsArray = rs1.getArray("toppings");
-//                    var toppingsArray = selectedEntree.getToppings().getArray();
-//                    String[] stringToppings = ((String[]) toppingsArray).clone();
-                    String[] stringToppings = ((String[]) toppingsArray.getArray());
-                    System.out.println("toppings (should be defaults):");
-                    for(String s : stringToppings)
-                        System.out.println(s);
-                    // String[] stringToppings = (String[]) toppingsArray;
+
+                    String[] stringToppings = (String[]) toppingsArray.getArray();
+
+
+
                     Vector<Topping> defaultToppings = new Vector<>();
                     for(String topping : stringToppings)
                     {
@@ -482,12 +480,21 @@ public class OrderScreenController implements Initializable {
                             ));
                         }
                     }
+
+
                     controller.setInitToppings(defaultToppings);
 
                     window.showAndWait();
 
                     // Things to do after launch: get new set of toppings
                     Vector<Topping> finalToppings = controller.getSelectedToppings();
+
+                    Vector<String> finalToppingIDS = new Vector<>();
+
+                    for (int i = 0; i < finalToppings.size(); i++){
+                        finalToppingIDS.add(finalToppings.get(i).getId());
+                    }
+
 
                     Entree alteredEntree = new Entree(selectedEntree.getId(),
                                                       selectedEntree.getName(),
@@ -497,8 +504,11 @@ public class OrderScreenController implements Initializable {
                                                       selectedEntree.getSalePrice(),
                                                       selectedEntree.getToppings());
 
-                    Array toppingsForDB = JDBC.conn.createArrayOf("text", finalToppings.toArray());
+
+
+                    Array toppingsForDB = JDBC.conn.createArrayOf("text", finalToppingIDS.toArray());
                     alteredEntree.setToppings(toppingsForDB);
+
 
                     double additionalCost = 0;
                     if (finalToppings.size() - defaultToppings.size() > 0) {
@@ -665,7 +675,6 @@ public class OrderScreenController implements Initializable {
                     case "WhataPOS.Entree":
                         Entree entree = (Entree) item;
                         orderTotal += entree.getSalePrice();
-                        System.out.println(orderTotal);
                         break;
 
                     case "WhataPOS.Beverage":
@@ -717,11 +726,6 @@ public class OrderScreenController implements Initializable {
                         Entree entree = (Entree) orderElement;
                         orderIDsJAVA[i] = entree.getId();
                         items.add(entree);
-                        System.out.println(entree.getName());
-                        var toppingsArray = entree.getToppings().getArray();
-                        String[] stringToppings = (String[]) toppingsArray;
-                        for(String s : stringToppings)
-                            System.out.println(s);
                         break;
 
                     case "WhataPOS.Side":
@@ -770,10 +774,14 @@ public class OrderScreenController implements Initializable {
                 {
                     Entree entree = (Entree) o;
                     JDBC.execUpdate("UPDATE entrees SET \"availableQuantity\" = " + (entree.getAvailableQuantity() - 1) +  " WHERE id = '" + entree.getId() + "'");
-//                    var temp = entree.getToppings().getArray();
-//                    String[] str = (String[]) temp;
-//                    for(String s : str)
-//                        System.out.println(s);
+
+                    var temp = entree.getToppings().getArray();
+                    String[] entreeToppingsIDS = (String[]) temp;
+
+                    for (int i = 0; i < entreeToppingsIDS.length; i++)
+                        JDBC.execUpdate("UPDATE toppings SET \"availableQuantity\" =(\"availableQuantity\"-1) WHERE id = '" + entreeToppingsIDS[i] + "'");
+
+
                 }
                 else if(o instanceof Beverage)
                 {
