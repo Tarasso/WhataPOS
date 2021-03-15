@@ -381,14 +381,14 @@ public class InventoryScreenController implements Initializable {
     @FXML
     public void actionShowBeverages(ActionEvent event) throws IOException {
 
-        TableColumn<Beverage, String> idColumn = new TableColumn<>("id");
+        TableColumn<Beverage, String> idColumn = new TableColumn<>("ID");
         idColumn.setMinWidth(20);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<Beverage, String> nameColumn = new TableColumn<>("name");
+        TableColumn<Beverage, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Beverage, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        TableColumn<Beverage, Integer> quantityColumn = new TableColumn<>("Quantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
         quantityColumn.setOnEditCommit(
                 (TableColumn.CellEditEvent<Beverage, Integer> t) -> {
@@ -399,10 +399,10 @@ public class InventoryScreenController implements Initializable {
         );
         quantityColumn.setCellFactory(TextFieldTableCell.<Beverage, Integer>forTableColumn(new IntegerStringConverter()));
 
-        TableColumn<Beverage, Double> costColumn = new TableColumn<>("costToMake");
+        TableColumn<Beverage, Double> costColumn = new TableColumn<>("Cost to make");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
-        TableColumn<Beverage, Double> priceColumn = new TableColumn<>("salePrice");
+        TableColumn<Beverage, Double> priceColumn = new TableColumn<>("Sale price");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
         priceColumn.setOnEditCommit(
                 (TableColumn.CellEditEvent<Beverage, Double> t) -> {
@@ -427,15 +427,15 @@ public class InventoryScreenController implements Initializable {
     @FXML
     public void actionShowDesserts(ActionEvent event) throws IOException {
 
-        TableColumn<Dessert, String> idColumn = new TableColumn<>("id");
+        TableColumn<Dessert, String> idColumn = new TableColumn<>("ID");
         idColumn.setMinWidth(20);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
 
-        TableColumn<Dessert, String> nameColumn = new TableColumn<>("name");
+        TableColumn<Dessert, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Dessert, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        TableColumn<Dessert, Integer> quantityColumn = new TableColumn<>("Quantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
         quantityColumn.setOnEditCommit(
                 (TableColumn.CellEditEvent<Dessert, Integer> t) -> {
@@ -446,10 +446,10 @@ public class InventoryScreenController implements Initializable {
         );
         quantityColumn.setCellFactory(TextFieldTableCell.<Dessert, Integer>forTableColumn(new IntegerStringConverter()));
 
-        TableColumn<Dessert, Double> costColumn = new TableColumn<>("costToMake");
+        TableColumn<Dessert, Double> costColumn = new TableColumn<>("Cost to make");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
-        TableColumn<Dessert, Double> priceColumn = new TableColumn<>("salePrice");
+        TableColumn<Dessert, Double> priceColumn = new TableColumn<>("Sale price");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
         priceColumn.setOnEditCommit(
                 (TableColumn.CellEditEvent<Dessert, Double> t) -> {
@@ -474,15 +474,15 @@ public class InventoryScreenController implements Initializable {
     @FXML
     public void actionShowSides(ActionEvent event) throws IOException {
 
-        TableColumn<Side, String> idColumn = new TableColumn<>("id");
+        TableColumn<Side, String> idColumn = new TableColumn<>("ID");
         idColumn.setMinWidth(20);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
 
-        TableColumn<Side, String> nameColumn = new TableColumn<>("name");
+        TableColumn<Side, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Side, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        TableColumn<Side, Integer> quantityColumn = new TableColumn<>("Quantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
         quantityColumn.setOnEditCommit(
                 (TableColumn.CellEditEvent<Side, Integer> t) -> {
@@ -493,10 +493,10 @@ public class InventoryScreenController implements Initializable {
         );
         quantityColumn.setCellFactory(TextFieldTableCell.<Side, Integer>forTableColumn(new IntegerStringConverter()));
 
-        TableColumn<Side, Double> costColumn = new TableColumn<>("costToMake");
+        TableColumn<Side, Double> costColumn = new TableColumn<>("Cost to make");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
-        TableColumn<Side, Double> priceColumn = new TableColumn<>("salePrice");
+        TableColumn<Side, Double> priceColumn = new TableColumn<>("Sale price");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
         priceColumn.setOnEditCommit(
                 (TableColumn.CellEditEvent<Side, Double> t) -> {
@@ -521,17 +521,17 @@ public class InventoryScreenController implements Initializable {
     @FXML
     public void actionShowEntrees(ActionEvent event) throws IOException {
 
-        TableColumn<Entree, String> idColumn = new TableColumn<>("id");
+        TableColumn<Entree, String> idColumn = new TableColumn<>("ID");
         idColumn.setMinWidth(20);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<Entree, String> nameColumn = new TableColumn<>("name");
+        TableColumn<Entree, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Entree, String> typeColumn = new TableColumn<>("type");
+        TableColumn<Entree, String> typeColumn = new TableColumn<>("Type");
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
 
-        TableColumn<Entree, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        TableColumn<Entree, Integer> quantityColumn = new TableColumn<>("Quantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
         quantityColumn.setOnEditCommit(
                 (TableColumn.CellEditEvent<Entree, Integer> t) -> {
@@ -542,10 +542,10 @@ public class InventoryScreenController implements Initializable {
         );
         quantityColumn.setCellFactory(TextFieldTableCell.<Entree, Integer>forTableColumn(new IntegerStringConverter()));
 
-        TableColumn<Entree, Double> costColumn = new TableColumn<>("costToMake");
+        TableColumn<Entree, Double> costColumn = new TableColumn<>("Cost to make");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
-        TableColumn<Entree, Double> priceColumn = new TableColumn<>("salePrice");
+        TableColumn<Entree, Double> priceColumn = new TableColumn<>("Sale price");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
         priceColumn.setOnEditCommit(
                 (TableColumn.CellEditEvent<Entree, Double> t) -> {
@@ -556,7 +556,7 @@ public class InventoryScreenController implements Initializable {
         );
         priceColumn.setCellFactory(TextFieldTableCell.<Entree, Double>forTableColumn(new DoubleStringConverter()));
 
-        TableColumn<Entree, Array> toppingsColumn = new TableColumn<>("toppings");
+        TableColumn<Entree, Array> toppingsColumn = new TableColumn<>("Toppings");
         toppingsColumn.setCellValueFactory(new PropertyValueFactory<>("toppings"));
 
         inventoryTableView.getColumns().clear();
@@ -575,14 +575,14 @@ public class InventoryScreenController implements Initializable {
     @FXML
     public void actionShowToppings(ActionEvent event) throws IOException {
 
-        TableColumn<Topping, String> idColumn = new TableColumn<>("id");
+        TableColumn<Topping, String> idColumn = new TableColumn<>("ID");
         idColumn.setMinWidth(20);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<Topping, String> nameColumn = new TableColumn<>("name");
+        TableColumn<Topping, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Topping, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        TableColumn<Topping, Integer> quantityColumn = new TableColumn<>("Quantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
         quantityColumn.setOnEditCommit(
                 (TableColumn.CellEditEvent<Topping, Integer> t) -> {
@@ -593,10 +593,10 @@ public class InventoryScreenController implements Initializable {
         );
         quantityColumn.setCellFactory(TextFieldTableCell.<Topping, Integer>forTableColumn(new IntegerStringConverter()));
 
-        TableColumn<Topping, Double> costColumn = new TableColumn<>("costToMake");
+        TableColumn<Topping, Double> costColumn = new TableColumn<>("Cost to make");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
-        TableColumn<Topping, Double> priceColumn = new TableColumn<>("salePrice");
+        TableColumn<Topping, Double> priceColumn = new TableColumn<>("Sale price");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
         priceColumn.setOnEditCommit(
                 (TableColumn.CellEditEvent<Topping, Double> t) -> {
@@ -644,17 +644,17 @@ public class InventoryScreenController implements Initializable {
     @FXML
     public void actionShowRecBeverages(ActionEvent event) throws IOException {
 
-        TableColumn<Beverage, String> idColumn = new TableColumn<>("id");
+        TableColumn<Beverage, String> idColumn = new TableColumn<>("ID");
         idColumn.setMinWidth(20);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<Beverage, String> nameColumn = new TableColumn<>("name");
+        TableColumn<Beverage, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Beverage, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        TableColumn<Beverage, Integer> quantityColumn = new TableColumn<>("Quantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
 
-        TableColumn<Beverage, Double> costColumn = new TableColumn<>("costToMake");
+        TableColumn<Beverage, Double> costColumn = new TableColumn<>("Cost to make");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
         TableColumn<Beverage, Double> priceColumn = new TableColumn<>("salePrice");
@@ -674,21 +674,21 @@ public class InventoryScreenController implements Initializable {
     @FXML
     public void actionShowRecDesserts(ActionEvent event) throws IOException {
 
-        TableColumn<Dessert, String> idColumn = new TableColumn<>("id");
+        TableColumn<Dessert, String> idColumn = new TableColumn<>("ID");
         idColumn.setMinWidth(20);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
 
-        TableColumn<Dessert, String> nameColumn = new TableColumn<>("name");
+        TableColumn<Dessert, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Dessert, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        TableColumn<Dessert, Integer> quantityColumn = new TableColumn<>("Quantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
 
-        TableColumn<Dessert, Double> costColumn = new TableColumn<>("costToMake");
+        TableColumn<Dessert, Double> costColumn = new TableColumn<>("Cost to make");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
-        TableColumn<Dessert, Double> priceColumn = new TableColumn<>("salePrice");
+        TableColumn<Dessert, Double> priceColumn = new TableColumn<>("Sale price");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         inventoryTableView.getColumns().clear();
@@ -705,26 +705,26 @@ public class InventoryScreenController implements Initializable {
     @FXML
     public void actionShowRecEntrees(ActionEvent event) throws IOException {
 
-        TableColumn<Entree, String> idColumn = new TableColumn<>("id");
+        TableColumn<Entree, String> idColumn = new TableColumn<>("ID");
         idColumn.setMinWidth(20);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<Entree, String> nameColumn = new TableColumn<>("name");
+        TableColumn<Entree, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        TableColumn<Entree, String> typeColumn = new TableColumn<>("type");
+        TableColumn<Entree, String> typeColumn = new TableColumn<>("Type");
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
 
-        TableColumn<Entree, Integer> quantityColumn = new TableColumn<>("availableQuantity");
+        TableColumn<Entree, Integer> quantityColumn = new TableColumn<>("Quantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
 
-        TableColumn<Entree, Double> costColumn = new TableColumn<>("costToMake");
+        TableColumn<Entree, Double> costColumn = new TableColumn<>("Cost to make");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
 
-        TableColumn<Entree, Double> priceColumn = new TableColumn<>("salePrice");
+        TableColumn<Entree, Double> priceColumn = new TableColumn<>("Sale price");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
-        TableColumn<Entree, Array> toppingsColumn = new TableColumn<>("toppings");
+        TableColumn<Entree, Array> toppingsColumn = new TableColumn<>("Toppings");
         toppingsColumn.setCellValueFactory(new PropertyValueFactory<>("toppings"));
 
         inventoryTableView.getColumns().clear();
