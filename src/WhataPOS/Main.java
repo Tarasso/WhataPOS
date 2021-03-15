@@ -27,8 +27,8 @@ public class Main extends Application {
     public static void main(String[] args) {
         JDBC jdbc = new JDBC(
             "jdbc:postgresql://47.186.232.151:63333/db901_group9_project2",
-            "liam_h",
-            "cosmicequation"
+            "kyle_m",
+            "Tarasso"
         );
 
 //        JDBC jdbc = new JDBC(

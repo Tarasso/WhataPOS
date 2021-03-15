@@ -842,7 +842,6 @@ public class OrderScreenController implements Initializable {
         orderTableView.getColumns().addAll(nameColumn, priceColumn);
 
         topChoicesButton.setVisible(false);
-        editToppingButton.setVisible(false);
     }
 
 }
