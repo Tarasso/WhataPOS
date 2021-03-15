@@ -25,6 +25,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import java.sql.*;
+import java.time.*;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.lang.reflect.Type;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class InventoryScreenController implements Initializable {
 
@@ -138,29 +144,70 @@ public class InventoryScreenController implements Initializable {
         return toppings;
     }
 
-    public ObservableList<Entree> getRecEntrees() {
+    public ObservableList<Entree> getRecEntrees(boolean getTrendingUp) {
         ObservableList<Entree> recs = FXCollections.observableArrayList();
         try {
-            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'E%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            LocalDate date_lower = null; // get from gui
+            LocalDate date_upper = null; // get from gui
+            String sql = "select \"date\", \"order\" from order_data";
             ResultSet rs = JDBC.execQuery(sql);
 
-            String[] id = new String[3];
-            int i = 0;
-            while (rs.next()) {
-                id[i++] = rs.getString("unnest");
-            }
+            Map<String, Integer> occurrences;
+            Map<String, String[]> json;
 
-            for (i = 0; i < id.length; ++i) {
-                rs = JDBC.execQuery("select * from \"entrees\" where \"id\" = '" + id[i] + "'");
-                while (rs.next()) {
+            Entry<String, Integer> min = null;
+            Entry<String, Integer> max = null;
+
+            Gson gson = new Gson();
+            Type entMapType = new TypeToken<Map<String, String[]>>() {}.getType();
+
+            while (rs.next()) {
+                // date object
+                LocalDate date_db = rs.getDate("date").toLocalDate();
+
+                // check if date in range
+                if (date_db.compareTo(date_upper) > 0) // greater than upper bound, exit
+                    break;
+                else if (date_db.compareTo(date_lower) < 0) // less than lower bound, continue
+                    continue;
+
+                // convert json to Map<String, String[]>
+                json = gson.fromJson(rs.getString("order"), entMapType);
+
+                // count occurrences of item IDs discard customization suffix
+                for (String k : json.keySet()) {
+                    if (occurrences.containsKey(k.substring(0, 2)))
+                        occurrences.put(k, occurrences.get(k) + 1);
+                    else
+                        occurrences.put(k, 1);
+                }
+
+                // find min and max occurrences
+                for (Entry<String, Integer> entry : occurrences.entrySet()) {
+                    if (min == null || min.getValue() > entry.getValue())
+                        min = entry;
+                    if (max == null || max.getValue() < entry.getValue())
+                        max = entry;
+                }
+
+                // return min or max based on boolean parameter
+                Entry<String, Integer> test = null;
+                if (getTrendingUp)
+                    test = max;
+                else
+                    test = min;
+
+                // perform lookup on test key and get row from table
+                ResultSet rs_lookup = JDBC.execQuery("select * from \"entrees\" where \"id\" = '" + test.getKey() + "'");
+                while (rs_lookup.next()) {
                     recs.add(new Entree(
-                            rs.getString("id"),
-                            rs.getString("name"),
-                            rs.getString("type"),
-                            rs.getInt("availableQuantity"),
-                            rs.getDouble("costToMake"),
-                            rs.getDouble("salePrice"),
-                            rs.getArray("toppings")
+                            rs_lookup.getString("id"),
+                            rs_lookup.getString("name"),
+                            rs_lookup.getString("type"),
+                            rs_lookup.getInt("availableQuantity"),
+                            rs_lookup.getDouble("costToMake"),
+                            rs_lookup.getDouble("salePrice"),
+                            rs_lookup.getArray("toppings")
                     ));
                 }
             }

@@ -28,7 +28,7 @@
          </children>
       </VBox>
    </top>
-   <right>
+   <bottom>
       <AnchorPane prefHeight="530.0" prefWidth="1090.0" style="-fx-background-color: #F39E26;" BorderPane.alignment="CENTER">
          <children>
             <Label layoutX="565.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Menu" textFill="WHITE">
@@ -36,7 +36,7 @@
                   <Font size="23.0" />
                </font>
             </Label>
-            <Label layoutX="62.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Order" textFill="WHITE">
+            <Label layoutX="93.0" layoutY="37.0" prefHeight="34.0" prefWidth="128.0" text="Order" textFill="WHITE">
                <font>
                   <Font size="23.0" />
                </font>
@@ -71,20 +71,29 @@
                   </Button>
                </children>
             </VBox>
-            <AnchorPane layoutX="47.0" layoutY="73.0" prefHeight="375.0" prefWidth="378.0" style="-fx-background-color: #F39E26;">
+            <AnchorPane layoutX="87.0" layoutY="77.0" prefHeight="375.0" prefWidth="358.0" style="-fx-background-color: #F39E26;">
                <children>
                   <TextArea fx:id="orderTextArea" layoutX="13.0" layoutY="288.0" prefHeight="78.0" prefWidth="350.0" />
-                  <TableView fx:id="orderTableView" layoutX="11.0" layoutY="-1.0" prefHeight="275.0" prefWidth="352.0" />
+                  <TableView fx:id="orderTableView" layoutX="11.0" layoutY="-6.0" prefHeight="275.0" prefWidth="352.0" />
                </children>
             </AnchorPane>
-            <Button layoutX="717.0" layoutY="458.0" mnemonicParsing="false" onAction="#actionSelectItem" prefHeight="26.0" prefWidth="107.0" text="Add" />
-            <Button layoutX="182.0" layoutY="458.0" mnemonicParsing="false" onAction="#actionPayItem" prefHeight="26.0" prefWidth="107.0" text="Pay" />
-            <Button layoutX="14.0" layoutY="73.0" mnemonicParsing="false" onAction="#actionDeleteItem" prefHeight="31.0" prefWidth="26.0" text="X">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
+            <Button layoutX="727.0" layoutY="458.0" mnemonicParsing="false" onAction="#actionSelectItem" prefHeight="26.0" prefWidth="107.0" text="Add" />
+            <Button fx:id="payButton" layoutX="209.0" layoutY="458.0" mnemonicParsing="false" onAction="#actionPayItem" prefHeight="26.0" prefWidth="107.0" text="Ready to Pay" />
+            <VBox layoutX="14.0" layoutY="73.0" prefHeight="70.0" prefWidth="70.0">
+               <children>
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#actionDeleteItem" prefHeight="20.0" prefWidth="79.0" text="Delete">
+                     <VBox.margin>
+                        <Insets bottom="8.0" />
+                     </VBox.margin>
+                  </Button>
+                  <Button fx:id="editToppingButton" mnemonicParsing="false" prefHeight="20.0" prefWidth="79.0" text="Edit">
+                     <VBox.margin>
+                        <Insets top="8.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
          </children>
       </AnchorPane>
-   </right>
+   </bottom>
 </BorderPane>
