@@ -223,26 +223,48 @@ public class OrderScreenController implements Initializable {
     public ObservableList<Beverage> getRecBeverages() {
         ObservableList<Beverage> recs = FXCollections.observableArrayList();
         try {
-            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'B%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            String sql = "select \"order\" from order_data";
             ResultSet rs = JDBC.execQuery(sql);
 
-            String[] id = new String[3];
-            int i = 0;
-            while (rs.next()) {
-                id[i++] = rs.getString("unnest");
-            }
+            Map<String, Integer> occurrences = new HashMap<String, Integer>();
+            Map<String, String[]> json;
 
-            for (i = 0; i < id.length; ++i) {
-                rs = JDBC.execQuery("select * from \"beverages\" where \"id\" = '" + id[i] + "'");
-                while (rs.next()) {
-                    recs.add(new Beverage(
-                            rs.getString("id"),
-                            rs.getString("name"),
-                            rs.getInt("availableQuantity"),
-                            rs.getDouble("costToMake"),
-                            rs.getDouble("salePrice")
-                    ));
+            Entry<String, Integer> max = null;
+
+            Gson gson = new Gson();
+            Type entMapType = new TypeToken<Map<String, String[]>>() {}.getType();
+
+            while (rs.next()) {
+                // convert json to Map<String, String[]>
+                json = gson.fromJson(rs.getString("order"), entMapType);
+
+                // count occurrences of item IDs discard customization suffix
+                for (String k : json.keySet()) {
+                    k = k.split("_")[0];
+                    if (k.charAt(0) != 'B')
+                        continue;
+                    if (occurrences.containsKey(k))
+                        occurrences.put(k, occurrences.get(k) + 1);
+                    else
+                        occurrences.put(k, 1);
                 }
+
+                // find max occurrences
+                for (Entry<String, Integer> entry : occurrences.entrySet()) {
+                    if (max == null || max.getValue() < entry.getValue())
+                        max = entry;
+                }
+            }
+            // perform lookup on test key and get row from table
+            rs = JDBC.execQuery("select * from \"beverages\" where \"id\" = '" + max.getKey() + "'");
+            while (rs.next()) {
+                recs.add(new Beverage(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getInt("availableQuantity"),
+                        rs.getDouble("costToMake"),
+                        rs.getDouble("salePrice")
+                ));
             }
         } catch(SQLException se) {
             // Handle errors for JDBC
@@ -255,26 +277,48 @@ public class OrderScreenController implements Initializable {
     public ObservableList<Dessert> getRecDesserts() {
         ObservableList<Dessert> recs = FXCollections.observableArrayList();
         try {
-            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'D%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            String sql = "select \"order\" from order_data";
             ResultSet rs = JDBC.execQuery(sql);
 
-            String[] id = new String[3];
-            int i = 0;
-            while (rs.next()) {
-                id[i++] = rs.getString("unnest");
-            }
+            Map<String, Integer> occurrences = new HashMap<String, Integer>();
+            Map<String, String[]> json;
 
-            for (i = 0; i < id.length; ++i) {
-                rs = JDBC.execQuery("select * from \"desserts\" where \"id\" = '" + id[i] + "'");
-                while (rs.next()) {
-                    recs.add(new Dessert(
-                            rs.getString("id"),
-                            rs.getString("name"),
-                            rs.getInt("availableQuantity"),
-                            rs.getDouble("costToMake"),
-                            rs.getDouble("salePrice")
-                    ));
+            Entry<String, Integer> max = null;
+
+            Gson gson = new Gson();
+            Type entMapType = new TypeToken<Map<String, String[]>>() {}.getType();
+
+            while (rs.next()) {
+                // convert json to Map<String, String[]>
+                json = gson.fromJson(rs.getString("order"), entMapType);
+
+                // count occurrences of item IDs discard customization suffix
+                for (String k : json.keySet()) {
+                    k = k.split("_")[0];
+                    if (k.charAt(0) != 'D')
+                        continue;
+                    if (occurrences.containsKey(k))
+                        occurrences.put(k, occurrences.get(k) + 1);
+                    else
+                        occurrences.put(k, 1);
                 }
+
+                // find max occurrences
+                for (Entry<String, Integer> entry : occurrences.entrySet()) {
+                    if (max == null || max.getValue() < entry.getValue())
+                        max = entry;
+                }
+            }
+            // perform lookup on test key and get row from table
+            rs = JDBC.execQuery("select * from \"desserts\" where \"id\" = '" + max.getKey() + "'");
+            while (rs.next()) {
+                recs.add(new Dessert(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getInt("availableQuantity"),
+                        rs.getDouble("costToMake"),
+                        rs.getDouble("salePrice")
+                ));
             }
         } catch(SQLException se) {
             // Handle errors for JDBC
@@ -686,7 +730,6 @@ public class OrderScreenController implements Initializable {
         // Finalize step
         if (payButton.getText().equals("Ready to Pay")) {
             deleteButton.setVisible(false);
-            editToppingButton.setVisible(false);
 
             double orderTotal = 0;
 

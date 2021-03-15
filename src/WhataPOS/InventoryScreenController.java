@@ -230,29 +230,72 @@ public class InventoryScreenController implements Initializable {
         return recs;
     }
 
-    public ObservableList<Beverage> getRecBeverages() {
+    public ObservableList<Beverage> getRecBeverages(boolean getTrendingUp) {
         ObservableList<Beverage> recs = FXCollections.observableArrayList();
         try {
-            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'B%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            LocalDate date_lower = beginDatePicker.getValue(); // get from gui
+            LocalDate date_upper = endDatePicker.getValue(); // get from gui
+            String sql = "select \"date\", \"order\" from order_data";
             ResultSet rs = JDBC.execQuery(sql);
 
-            String[] id = new String[3];
-            int i = 0;
-            while (rs.next()) {
-                id[i++] = rs.getString("unnest");
-            }
+            Map<String, Integer> occurrences = new HashMap<String, Integer>();
+            Map<String, String[]> json;
 
-            for (i = 0; i < id.length; ++i) {
-                rs = JDBC.execQuery("select * from \"beverages\" where \"id\" = '" + id[i] + "'");
-                while (rs.next()) {
-                    recs.add(new Beverage(
-                                rs.getString("id"),
-                                rs.getString("name"),
-                                rs.getInt("availableQuantity"),
-                                rs.getDouble("costToMake"),
-                                rs.getDouble("salePrice")
-                    ));
+            Entry<String, Integer> min = null;
+            Entry<String, Integer> max = null;
+
+            Gson gson = new Gson();
+            Type entMapType = new TypeToken<Map<String, String[]>>() {}.getType();
+
+            Entry<String, Integer> test = null;
+            while (rs.next()) {
+                // date object
+                LocalDate date_db = rs.getDate("date").toLocalDate();
+
+                // check if date in range
+                if (date_db.compareTo(date_upper) > 0) // greater than upper bound, exit
+                    break;
+                else if (date_db.compareTo(date_lower) < 0) // less than lower bound, continue
+                    continue;
+
+                // convert json to Map<String, String[]>
+                json = gson.fromJson(rs.getString("order"), entMapType);
+
+                // count occurrences of item IDs discard customization suffix
+                for (String k : json.keySet()) {
+                    k = k.split("_")[0];
+                    if (k.charAt(0) != 'B')
+                        continue;
+                    if (occurrences.containsKey(k))
+                        occurrences.put(k, occurrences.get(k) + 1);
+                    else
+                        occurrences.put(k, 1);
                 }
+
+                // find min and max occurrences
+                for (Entry<String, Integer> entry : occurrences.entrySet()) {
+                    if (min == null || min.getValue() > entry.getValue())
+                        min = entry;
+                    if (max == null || max.getValue() < entry.getValue())
+                        max = entry;
+                }
+
+                // return min or max based on boolean parameter
+                if (getTrendingUp)
+                    test = max;
+                else
+                    test = min;
+            }
+            // perform lookup on test key and get row from table
+            rs = JDBC.execQuery("select * from \"beverages\" where \"id\" = '" + test.getKey() + "'");
+            while (rs.next()) {
+                recs.add(new Beverage(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getInt("availableQuantity"),
+                        rs.getDouble("costToMake"),
+                        rs.getDouble("salePrice")
+                ));
             }
         } catch(SQLException se) {
             // Handle errors for JDBC
@@ -261,29 +304,72 @@ public class InventoryScreenController implements Initializable {
         return recs;
     }
 
-    public ObservableList<Dessert> getRecDesserts() {
+    public ObservableList<Dessert> getRecDesserts(boolean getTrendingUp) {
         ObservableList<Dessert> recs = FXCollections.observableArrayList();
         try {
-            String sql = "with \"orderInfo\" as (select unnest(\"order\") from order_data) select \"unnest\", count(\"unnest\") as \"MostCommon\" from \"orderInfo\" where \"unnest\" like 'D%' group by \"unnest\" order by \"MostCommon\" DESC LIMIT 3";
+            LocalDate date_lower = beginDatePicker.getValue(); // get from gui
+            LocalDate date_upper = endDatePicker.getValue(); // get from gui
+            String sql = "select \"date\", \"order\" from order_data";
             ResultSet rs = JDBC.execQuery(sql);
 
-            String[] id = new String[3];
-            int i = 0;
-            while (rs.next()) {
-                id[i++] = rs.getString("unnest");
-            }
+            Map<String, Integer> occurrences = new HashMap<String, Integer>();
+            Map<String, String[]> json;
 
-            for (i = 0; i < id.length; ++i) {
-                rs = JDBC.execQuery("select * from \"desserts\" where \"id\" = '" + id[i] + "'");
-                while (rs.next()) {
-                    recs.add(new Dessert(
-                            rs.getString("id"),
-                            rs.getString("name"),
-                            rs.getInt("availableQuantity"),
-                            rs.getDouble("costToMake"),
-                            rs.getDouble("salePrice")
-                    ));
+            Entry<String, Integer> min = null;
+            Entry<String, Integer> max = null;
+
+            Gson gson = new Gson();
+            Type entMapType = new TypeToken<Map<String, String[]>>() {}.getType();
+
+            Entry<String, Integer> test = null;
+            while (rs.next()) {
+                // date object
+                LocalDate date_db = rs.getDate("date").toLocalDate();
+
+                // check if date in range
+                if (date_db.compareTo(date_upper) > 0) // greater than upper bound, exit
+                    break;
+                else if (date_db.compareTo(date_lower) < 0) // less than lower bound, continue
+                    continue;
+
+                // convert json to Map<String, String[]>
+                json = gson.fromJson(rs.getString("order"), entMapType);
+
+                // count occurrences of item IDs discard customization suffix
+                for (String k : json.keySet()) {
+                    k = k.split("_")[0];
+                    if (k.charAt(0) != 'D')
+                        continue;
+                    if (occurrences.containsKey(k))
+                        occurrences.put(k, occurrences.get(k) + 1);
+                    else
+                        occurrences.put(k, 1);
                 }
+
+                // find min and max occurrences
+                for (Entry<String, Integer> entry : occurrences.entrySet()) {
+                    if (min == null || min.getValue() > entry.getValue())
+                        min = entry;
+                    if (max == null || max.getValue() < entry.getValue())
+                        max = entry;
+                }
+
+                // return min or max based on boolean parameter
+                if (getTrendingUp)
+                    test = max;
+                else
+                    test = min;
+            }
+            // perform lookup on test key and get row from table
+            rs = JDBC.execQuery("select * from \"desserts\" where \"id\" = '" + test.getKey() + "'");
+            while (rs.next()) {
+                recs.add(new Dessert(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getInt("availableQuantity"),
+                        rs.getDouble("costToMake"),
+                        rs.getDouble("salePrice")
+                ));
             }
         } catch(SQLException se) {
             // Handle errors for JDBC
@@ -318,6 +404,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Beverage, Double> priceColumn = new TableColumn<>("salePrice");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+        priceColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Beverage, Double> t) -> {
+                    Beverage selectedBeverage = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedBeverage.setSalePrice(Double.parseDouble(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE beverages SET \"salePrice\" = " + selectedBeverage.getSalePrice() +  " WHERE id = '" + selectedBeverage.getId() + "'");
+                }
+        );
+        priceColumn.setCellFactory(TextFieldTableCell.<Beverage, Double>forTableColumn(new DoubleStringConverter()));
 
         inventoryTableView.getColumns().clear();
         inventoryTableView.setItems(getBeverages());
@@ -357,6 +451,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Dessert, Double> priceColumn = new TableColumn<>("salePrice");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+        priceColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Dessert, Double> t) -> {
+                    Dessert selectedDessert = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedDessert.setSalePrice(Double.parseDouble(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE desserts SET \"salePrice\" = " + selectedDessert.getSalePrice() +  " WHERE id = '" + selectedDessert.getId() + "'");
+                }
+        );
+        priceColumn.setCellFactory(TextFieldTableCell.<Dessert, Double>forTableColumn(new DoubleStringConverter()));
 
         inventoryTableView.getColumns().clear();
         inventoryTableView.setItems(getDesserts());
@@ -396,6 +498,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Side, Double> priceColumn = new TableColumn<>("salePrice");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+        priceColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Side, Double> t) -> {
+                    Side selectedSide = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedSide.setSalePrice(Double.parseDouble(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE sides SET \"salePrice\" = " + selectedSide.getSalePrice() +  " WHERE id = '" + selectedSide.getId() + "'");
+                }
+        );
+        priceColumn.setCellFactory(TextFieldTableCell.<Side, Double>forTableColumn(new DoubleStringConverter()));
 
         inventoryTableView.getColumns().clear();
         inventoryTableView.setItems(getSides());
@@ -488,6 +598,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Topping, Double> priceColumn = new TableColumn<>("salePrice");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+        priceColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Topping, Double> t) -> {
+                    Topping selectedTopping = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedTopping.setSalePrice(Double.parseDouble(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE toppings SET \"salePrice\" = " + selectedTopping.getSalePrice() +  " WHERE id = '" + selectedTopping.getId() + "'");
+                }
+        );
+        priceColumn.setCellFactory(TextFieldTableCell.<Topping, Double>forTableColumn(new DoubleStringConverter()));
 
         inventoryTableView.getColumns().clear();
         inventoryTableView.setItems(getToppings());
@@ -543,7 +661,7 @@ public class InventoryScreenController implements Initializable {
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         inventoryTableView.getColumns().clear();
-        inventoryTableView.setItems(getRecBeverages());
+        inventoryTableView.setItems(getRecBeverages(trendingUp));
         inventoryTableView.getColumns().addAll(
                 idColumn,
                 nameColumn,
@@ -574,7 +692,7 @@ public class InventoryScreenController implements Initializable {
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
 
         inventoryTableView.getColumns().clear();
-        inventoryTableView.setItems(getRecDesserts());
+        inventoryTableView.setItems(getRecDesserts(trendingUp));
         inventoryTableView.getColumns().addAll(
                 idColumn,
                 nameColumn,
@@ -631,11 +749,11 @@ public class InventoryScreenController implements Initializable {
                     actionShowRecEntrees(event);
                     break;
                 case "WhataPOS.Beverage":
-                    getRecBeverages();
+                    getRecBeverages(trendingUp);
                     actionShowRecBeverages(event);
                     break;
                 case "WhataPOS.Dessert":
-                    getRecDesserts();
+                    getRecDesserts(trendingUp);
                     actionShowRecDesserts(event);
                     break;
             }
