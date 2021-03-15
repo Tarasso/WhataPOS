@@ -13,4 +13,4 @@ run:
 	java -cp "$(pkg_path):postgresql-42.2.19.jar:gson-2.8.6.jar" --module-path $(lib_path) --add-modules javafx.controls,javafx.fxml WhataPOS.Main
 
 clean:
-	rm -f  production/*
+	rm -rf  production/*

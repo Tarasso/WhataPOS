@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 import WhataPOS.JDBC;
@@ -166,10 +167,10 @@ public class OrderScreenController implements Initializable {
     public ObservableList<Entree> getRecEntrees() {
         ObservableList<Entree> recs = FXCollections.observableArrayList();
         try {
-            String sql = "select \"date\", \"order\" from order_data";
+            String sql = "select \"order\" from order_data";
             ResultSet rs = JDBC.execQuery(sql);
 
-            Map<String, Integer> occurrences;
+            Map<String, Integer> occurrences = new HashMap<String, Integer>();
             Map<String, String[]> json;
 
             Entry<String, Integer> max = null;
@@ -178,39 +179,38 @@ public class OrderScreenController implements Initializable {
             Type entMapType = new TypeToken<Map<String, String[]>>() {}.getType();
 
             while (rs.next()) {
-                // date object
-                LocalDate date_db = rs.getDate("date").toLocalDate();
-
                 // convert json to Map<String, String[]>
                 json = gson.fromJson(rs.getString("order"), entMapType);
 
                 // count occurrences of item IDs discard customization suffix
                 for (String k : json.keySet()) {
-                    if (occurrences.containsKey(k.substring(0, 2)))
+                    k = k.split("_")[0];
+                    if (k.charAt(0) != 'E')
+                        continue;
+                    if (occurrences.containsKey(k))
                         occurrences.put(k, occurrences.get(k) + 1);
                     else
                         occurrences.put(k, 1);
                 }
 
-                // find min and max occurrences
+                // find max occurrences
                 for (Entry<String, Integer> entry : occurrences.entrySet()) {
                     if (max == null || max.getValue() < entry.getValue())
                         max = entry;
                 }
-
-                // perform lookup on test key and get row from table
-                ResultSet rs_lookup = JDBC.execQuery("select * from \"entrees\" where \"id\" = '" + max.getKey() + "'");
-                while (rs_lookup.next()) {
-                    recs.add(new Entree(
-                            rs_lookup.getString("id"),
-                            rs_lookup.getString("name"),
-                            rs_lookup.getString("type"),
-                            rs_lookup.getInt("availableQuantity"),
-                            rs_lookup.getDouble("costToMake"),
-                            rs_lookup.getDouble("salePrice"),
-                            rs_lookup.getArray("toppings")
-                    ));
-                }
+            }
+            // perform lookup on test key and get row from table
+            rs = JDBC.execQuery("select * from \"entrees\" where \"id\" = '" + max.getKey() + "'");
+            while (rs.next()) {
+                recs.add(new Entree(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getString("type"),
+                        rs.getInt("availableQuantity"),
+                        rs.getDouble("costToMake"),
+                        rs.getDouble("salePrice"),
+                        rs.getArray("toppings")
+                ));
             }
         } catch(SQLException se) {
             // Handle errors for JDBC
@@ -485,13 +485,11 @@ public class OrderScreenController implements Initializable {
                     ResultSet rs1 = JDBC.execQuery(sql1);
                     rs1.next();
                     var toppingsArray = rs1.getArray("toppings");
-//                    var toppingsArray = selectedEntree.getToppings().getArray();
-//                    String[] stringToppings = ((String[]) toppingsArray).clone();
-                    String[] stringToppings = ((String[]) toppingsArray.getArray());
-                    System.out.println("toppings (should be defaults):");
-                    for(String s : stringToppings)
-                        System.out.println(s);
-                    // String[] stringToppings = (String[]) toppingsArray;
+
+                    String[] stringToppings = (String[]) toppingsArray.getArray();
+
+
+
                     Vector<Topping> defaultToppings = new Vector<>();
                     for(String topping : stringToppings)
                     {
@@ -507,6 +505,8 @@ public class OrderScreenController implements Initializable {
                             ));
                         }
                     }
+
+
                     controller.setInitToppings(defaultToppings);
 
                     window.showAndWait();
@@ -519,6 +519,7 @@ public class OrderScreenController implements Initializable {
                     for (int i = 0; i < finalToppings.size(); i++){
                         finalToppingIDS.add(finalToppings.get(i).getId());
                     }
+
 
                     Entree alteredEntree = new Entree(selectedEntree.getId(),
                                                       selectedEntree.getName(),
@@ -694,7 +695,6 @@ public class OrderScreenController implements Initializable {
                     case "WhataPOS.Entree":
                         Entree entree = (Entree) item;
                         orderTotal += entree.getSalePrice();
-                        System.out.println(orderTotal);
                         break;
 
                     case "WhataPOS.Beverage":
@@ -759,6 +759,7 @@ public class OrderScreenController implements Initializable {
                         orderIDsJAVA[i] = dessert.getId();
                         items.add(dessert);
                         break;
+
                 }
             }
 
@@ -785,15 +786,46 @@ public class OrderScreenController implements Initializable {
             maxidRS.next();
             int maxid = maxidRS.getInt("maxid");
 
+            //decrement quantities
+            for(Object o : items)
+            {
+                if(o instanceof Entree)
+                {
+                    Entree entree = (Entree) o;
+                    JDBC.execUpdate("UPDATE entrees SET \"availableQuantity\" = " + (entree.getAvailableQuantity() - 1) +  " WHERE id = '" + entree.getId() + "'");
+
+                    var temp = entree.getToppings().getArray();
+                    String[] entreeToppingsIDS = (String[]) temp;
+
+                    for (int i = 0; i < entreeToppingsIDS.length; i++)
+                        JDBC.execUpdate("UPDATE toppings SET \"availableQuantity\" =(\"availableQuantity\"-1) WHERE id = '" + entreeToppingsIDS[i] + "'");
+
+
+                }
+                else if(o instanceof Beverage)
+                {
+                    Beverage beverage = (Beverage) o;
+                    JDBC.execUpdate("UPDATE beverages SET \"availableQuantity\" = " + (beverage.getAvailableQuantity() - 1) +  " WHERE id = '" + beverage.getId() + "'");
+                }
+                else if(o instanceof Dessert)
+                {
+                    Dessert dessert = (Dessert) o;
+                    JDBC.execUpdate("UPDATE desserts SET \"availableQuantity\" = " + (dessert.getAvailableQuantity() - 1) +  " WHERE id = '" + dessert.getId() + "'");
+
+                }
+                else if(o instanceof Side)
+                {
+                    Side side = (Side) o;
+                    JDBC.execUpdate("UPDATE sides SET \"availableQuantity\" = " + (side.getAvailableQuantity() - 1) +  " WHERE id = '" + side.getId() + "'");
+                }
+            }
+
             orderTextArea.setText(
                     "Order Placed! Your Order's ID is " + maxid + "."
             );
             orderTableView.getItems().clear();
         }
     }
-
-
-
 
     @Override
     public void initialize (URL url, ResourceBundle resourcebundle) {

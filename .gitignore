@@ -107,5 +107,12 @@ fabric.properties
 # JavaFX library
 javafx-sdk-11.0.2
 
+# Gson library
+gson-2.8.6.jar
+
 # binaries
 production/WhataPOS
+
+# gson library
+gson-2.8.6.jar
+gson-2.8.6.jar

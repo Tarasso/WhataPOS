@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 import java.sql.*;
 import java.time.*;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Map.Entry;
 import java.lang.reflect.Type;
 import com.google.gson.Gson;
@@ -156,12 +157,12 @@ public class InventoryScreenController implements Initializable {
     public ObservableList<Entree> getRecEntrees(boolean getTrendingUp) {
         ObservableList<Entree> recs = FXCollections.observableArrayList();
         try {
-            LocalDate date_lower = null; // get from gui
-            LocalDate date_upper = null; // get from gui
+            LocalDate date_lower = beginDatePicker.getValue(); // get from gui
+            LocalDate date_upper = endDatePicker.getValue(); // get from gui
             String sql = "select \"date\", \"order\" from order_data";
             ResultSet rs = JDBC.execQuery(sql);
 
-            Map<String, Integer> occurrences;
+            Map<String, Integer> occurrences = new HashMap<String, Integer>();
             Map<String, String[]> json;
 
             Entry<String, Integer> min = null;
@@ -170,6 +171,7 @@ public class InventoryScreenController implements Initializable {
             Gson gson = new Gson();
             Type entMapType = new TypeToken<Map<String, String[]>>() {}.getType();
 
+            Entry<String, Integer> test = null;
             while (rs.next()) {
                 // date object
                 LocalDate date_db = rs.getDate("date").toLocalDate();
@@ -185,7 +187,10 @@ public class InventoryScreenController implements Initializable {
 
                 // count occurrences of item IDs discard customization suffix
                 for (String k : json.keySet()) {
-                    if (occurrences.containsKey(k.substring(0, 2)))
+                    k = k.split("_")[0];
+                    if (k.charAt(0) != 'E')
+                        continue;
+                    if (occurrences.containsKey(k))
                         occurrences.put(k, occurrences.get(k) + 1);
                     else
                         occurrences.put(k, 1);
@@ -200,25 +205,23 @@ public class InventoryScreenController implements Initializable {
                 }
 
                 // return min or max based on boolean parameter
-                Entry<String, Integer> test = null;
                 if (getTrendingUp)
                     test = max;
                 else
                     test = min;
-
-                // perform lookup on test key and get row from table
-                ResultSet rs_lookup = JDBC.execQuery("select * from \"entrees\" where \"id\" = '" + test.getKey() + "'");
-                while (rs_lookup.next()) {
-                    recs.add(new Entree(
-                            rs_lookup.getString("id"),
-                            rs_lookup.getString("name"),
-                            rs_lookup.getString("type"),
-                            rs_lookup.getInt("availableQuantity"),
-                            rs_lookup.getDouble("costToMake"),
-                            rs_lookup.getDouble("salePrice"),
-                            rs_lookup.getArray("toppings")
-                    ));
-                }
+            }
+            // perform lookup on test key and get row from table
+            rs = JDBC.execQuery("select * from \"entrees\" where \"id\" = '" + test.getKey() + "'");
+            while (rs.next()) {
+                recs.add(new Entree(
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getString("type"),
+                        rs.getInt("availableQuantity"),
+                        rs.getDouble("costToMake"),
+                        rs.getDouble("salePrice"),
+                        rs.getArray("toppings")
+                ));
             }
         } catch(SQLException se) {
             // Handle errors for JDBC
@@ -301,6 +304,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Beverage, Integer> quantityColumn = new TableColumn<>("availableQuantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        quantityColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Beverage, Integer> t) -> {
+                    Beverage selectedBeverage = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedBeverage.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE beverages SET \"availableQuantity\" = " + selectedBeverage.getAvailableQuantity() +  " WHERE id = '" + selectedBeverage.getId() + "'");
+                }
+        );
+        quantityColumn.setCellFactory(TextFieldTableCell.<Beverage, Integer>forTableColumn(new IntegerStringConverter()));
 
         TableColumn<Beverage, Double> costColumn = new TableColumn<>("costToMake");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
@@ -332,6 +343,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Dessert, Integer> quantityColumn = new TableColumn<>("availableQuantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        quantityColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Dessert, Integer> t) -> {
+                    Dessert selectedDessert = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedDessert.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE desserts SET \"availableQuantity\" = " + selectedDessert.getAvailableQuantity() +  " WHERE id = '" + selectedDessert.getId() + "'");
+                }
+        );
+        quantityColumn.setCellFactory(TextFieldTableCell.<Dessert, Integer>forTableColumn(new IntegerStringConverter()));
 
         TableColumn<Dessert, Double> costColumn = new TableColumn<>("costToMake");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
@@ -363,6 +382,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Side, Integer> quantityColumn = new TableColumn<>("availableQuantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        quantityColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Side, Integer> t) -> {
+                    Side selectedSide = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedSide.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE sides SET \"availableQuantity\" = " + selectedSide.getAvailableQuantity() +  " WHERE id = '" + selectedSide.getId() + "'");
+                }
+        );
+        quantityColumn.setCellFactory(TextFieldTableCell.<Side, Integer>forTableColumn(new IntegerStringConverter()));
 
         TableColumn<Side, Double> costColumn = new TableColumn<>("costToMake");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
@@ -400,8 +427,7 @@ public class InventoryScreenController implements Initializable {
                 (TableColumn.CellEditEvent<Entree, Integer> t) -> {
                     Entree selectedEntree = t.getTableView().getItems().get(t.getTablePosition().getRow());
                     selectedEntree.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
-                    System.out.println(selectedEntree.getAvailableQuantity());
-
+                    JDBC.execUpdate("UPDATE entrees SET \"availableQuantity\" = " + selectedEntree.getAvailableQuantity() +  " WHERE id = '" + selectedEntree.getId() + "'");
                 }
         );
         quantityColumn.setCellFactory(TextFieldTableCell.<Entree, Integer>forTableColumn(new IntegerStringConverter()));
@@ -411,6 +437,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Entree, Double> priceColumn = new TableColumn<>("salePrice");
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
+        priceColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Entree, Double> t) -> {
+                    Entree selectedEntree = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedEntree.setSalePrice(Double.parseDouble(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE entrees SET \"salePrice\" = " + selectedEntree.getSalePrice() +  " WHERE id = '" + selectedEntree.getId() + "'");
+                }
+        );
+        priceColumn.setCellFactory(TextFieldTableCell.<Entree, Double>forTableColumn(new DoubleStringConverter()));
 
         TableColumn<Entree, Array> toppingsColumn = new TableColumn<>("toppings");
         toppingsColumn.setCellValueFactory(new PropertyValueFactory<>("toppings"));
@@ -440,6 +474,14 @@ public class InventoryScreenController implements Initializable {
 
         TableColumn<Topping, Integer> quantityColumn = new TableColumn<>("availableQuantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        quantityColumn.setOnEditCommit(
+                (TableColumn.CellEditEvent<Topping, Integer> t) -> {
+                    Topping selectedTopping = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    selectedTopping.setAvailableQuantity(Integer.parseInt(t.getNewValue().toString()));
+                    JDBC.execUpdate("UPDATE toppings SET \"availableQuantity\" = " + selectedTopping.getAvailableQuantity() +  " WHERE id = '" + selectedTopping.getId() + "'");
+                }
+        );
+        quantityColumn.setCellFactory(TextFieldTableCell.<Topping, Integer>forTableColumn(new IntegerStringConverter()));
 
         TableColumn<Topping, Double> costColumn = new TableColumn<>("costToMake");
         costColumn.setCellValueFactory(new PropertyValueFactory<>("costToMake"));
@@ -568,7 +610,7 @@ public class InventoryScreenController implements Initializable {
         toppingsColumn.setCellValueFactory(new PropertyValueFactory<>("toppings"));
 
         inventoryTableView.getColumns().clear();
-        inventoryTableView.setItems(getRecEntrees());
+        inventoryTableView.setItems(getRecEntrees(trendingUp));
         inventoryTableView.getColumns().addAll(
                 idColumn,
                 nameColumn,
@@ -585,7 +627,7 @@ public class InventoryScreenController implements Initializable {
         try {
             switch (object.getClass().getName()) {
                 case "WhataPOS.Entree":
-                    getRecEntrees();
+                    getRecEntrees(trendingUp);
                     actionShowRecEntrees(event);
                     break;
                 case "WhataPOS.Beverage":
